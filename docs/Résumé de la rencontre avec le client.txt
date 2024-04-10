@@ -1,0 +1,17 @@
+Projet S8:
+
+Objectif 1: Classer les tags selon qu'ils appartiennent au cartons en cours de lecture ou non
+
+-On sait qu'on évalue un carton en particulier à partir de la lecture de son code barre
+-La lecture du code barre s'effectue durant une durée de temps à partir delaquelle on va définir une fenêtre de
+ temps
+-Dans cette fenêtre de temps on a un ensemble de données telles que la puissance du signal (RSSI) et le nombre de
+ mesures faites sur un tags
+-Ces mesures se font durant le temps de lecture du code barre 
+
+Il faut utiliser les méthodes analytique et de machine learning et en faire un comparatif
+Utiliser plusieurs algorithmes de classification
+Evaluer les algorithmes en affichant les matrices de confusion et des métrics d'évaluation telles que la précision
+Faire une API en C# qui va aider le client à faire des tests
+L'API propose les méthodes analytique et de ML
+Lorsqu'il choisit le ML il doit pouvoir choisir entre différents modèles de classification, choisir les hyperparamètres et avoir en sortie l'évaluation du modèle
