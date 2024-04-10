@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h2>Choisissez un modèle :</h2>
+
+    <hr /> <!-- Ligne de séparation -->
+
+    <div class="choice" style="margin-bottom: 20px;">
+        <a asp-page="/AnalyticalModelPage" class="btn btn-primary">Modèle Analytique</a>
+    </div>
+
+    <hr /> <!-- Ligne de séparation -->
+
+    <div class="choice" style="margin-top: 20px;">
+        <a asp-controller="MachineLearning" asp-action="Index" class="btn btn-primary">Machine Learning</a>
+    </div>
+
+    <hr /> <!-- Ligne de séparation -->
+
+</div>
