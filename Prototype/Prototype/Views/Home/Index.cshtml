@@ -2,6 +2,57 @@
     ViewData["Title"] = "Home Page";
 }
 
+<style>
+    /* Style pour le fond avec l'image */
+    body {
+        background-image: url('https://cdn.pixabay.com/photo/2017/04/13/20/26/artificial-intelligence-2228610_1280.jpg');
+        background-size: 100% 100%; /* Ajuste la taille de l'image pour couvrir toute la zone */
+        background-position: center; /* Centre l'image horizontalement et verticalement */
+        background-attachment: fixed; /* Fixe l'image en arrière-plan pour éviter le défilement */
+        margin: 0;
+        padding: 0;
+        height: 100vh; /* Prend toute la hauteur de l'écran */
+    }
+
+    /* Style pour le centre du contenu */
+    .text-center {
+        text-align: center;
+        padding: 20px; /* Ajout de marge intérieure pour l'esthétique */
+        color: #fff; /* Texte blanc */
+    }
+
+    /* Style pour la table */
+    .table {
+        width: 80%;
+        margin: 0 auto; /* Pour centrer la table */
+        border-collapse: collapse;
+    }
+
+        /* Style pour les cellules de la table */
+        .table th,
+        .table td {
+            padding: 10px;
+            border: 1px solid #ddd; /* Bordure grise */
+        }
+
+    /* Style pour les boutons */
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        text-align: center;
+        text-decoration: none;
+        background-color: #007bff; /* Bleu primaire */
+        color: #fff; /* Texte blanc */
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .btn:hover {
+            background-color: #0056b3; /* Bleu plus foncé au survol */
+        }
+</style>
+
 <div class="text-center">
     <h2>Choisissez un modèle :</h2>
 

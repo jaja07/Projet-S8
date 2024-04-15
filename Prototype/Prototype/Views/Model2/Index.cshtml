@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "KNN";
+    ViewData["Title"] = "DecisionTreeClassifier";
 }
 <style>
     .conteneur-bouton {
@@ -14,22 +14,90 @@
 <form method="get" action="">
 
     <div>
-        <label for="param1">Paramètre 1</label>
-        <input type="text" name="Param1" id="Param1">
-        <p>Description du paramètre 1 : Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <label for="param1">Criterion</label>
+        <select name="Param1" id="Param1">
+            <option value="gini">gini</option>
+            <option value="entropy">entropy</option>
+            <option value="log_loss">log_loss</option>
+        </select>
+        <p>Description : The function to measure the quality of a split. Supported criteria are “gini” for the Gini impurity and “log_loss” and “entropy” both for the Shannon information gain.</p>
     </div>
 
     <div>
-        <label for="param2">Paramètre 2</label>
-        <input type="text" name="Param2" id="Param2">
-        <p>Description du paramètre 2 : Ut aliquam ligula sit amet arcu convallis, eget rutrum lorem sollicitudin.</p>
+        <label for="param2">Splitter</label>
+        <select name="Param2" id="Param2">
+            <option value="best">best</option>
+            <option value="random">random</option>
+        </select>
+        <p>Description : The strategy used to choose the split at each node. Supported strategies are “best” to choose the best split and “random” to choose the best random split.</p>
     </div>
 
     <div>
-        <label for="param3">Paramètre 3</label>
-        <input type="text" name="Param3" id="Param3">
-        <p>Description du paramètre 3 : Sed ultrices felis sit amet arcu iaculis aliquet.</p>
+        <label for="param3">Max Depth</label>
+        <input type="text" name="Param3" id="Param3" value="None" pattern="[0-9]*" title="Entrez un nombre entier ou laissez vide pour None">
+        <p>Description : The maximum depth of the tree. If None, then nodes are expanded until all leaves are pure or until all leaves contain less than min_samples_split samples.</p>
     </div>
+
+    <div>
+        <label for="param4">Min_Samples_Split</label>
+        <input type="text" name="Param4" id="Param4" value="2" pattern="[0-9]+(\.[0-9]+)?" title="Entrez un nombre entier ou à virgule flottante">
+        <p>Description : The minimum number of samples required to split an internal node. If int, then consider min_samples_split as the minimum number. If float, then min_samples_split is a fraction and ceil(min_samples_split * n_samples) are the minimum number of samples for each split.</p>
+    </div>
+
+    <div>
+        <label for="param5">Min Samples Leaf</label>
+        <input type="text" name="Param5" id="Param5" value="1" pattern="[0-9]+(\.[0-9]+)?" title="Entrez un nombre entier ou à virgule flottante">
+        <p>Description : The minimum number of samples required to be at a leaf node. A split point at any depth will only be considered if it leaves at least min_samples_leaf training samples in each of the left and right branches. This may have the effect of smoothing the model, especially in regression.</p>
+    </div>
+
+    <div>
+        <label for="param6">Min Weight Fraction Leaf</label>
+        <input type="text" name="Param6" id="Param6" value="0.0" pattern="[0-9]+(\.[0-9]+)?" title="Entrez un nombre à virgule flottante">
+        <p>Description : The minimum weighted fraction of the sum total of weights (of all the input samples) required to be at a leaf node. Samples have equal weight when sample_weight is not provided.</p>
+    </div>
+
+    <div>
+        <label for="param7">Max Features</label>
+        <input type="text" name="Param7" id="Param7" value="None" pattern="[0-9]+(\.[0-9]+)?|[a-zA-Z]+" title="Entrez un nombre entier, à virgule flottante, ou choisissez 'sqrt' ou 'log2'">
+        <p>Description : The number of features to consider when looking for the best split.</p>
+    </div>
+
+    <div>
+        <label for="param8">Random State</label>
+        <input type="text" name="Param8" id="Param8" value="None" pattern="[0-9]*" title="Entrez un nombre entier ou laissez vide">
+        <p>Description : Controls the randomness of the estimator.</p>
+    </div>
+
+    <div>
+        <label for="param9">Max Leaf Nodes</label>
+        <input type="text" name="Param9" id="Param9" value="None" pattern="[0-9]*" title="Entrez un nombre entier ou laissez vide">
+        <p>Description : Grow a tree with max_leaf_nodes in best-first fashion.</p>
+    </div>
+
+    <div>
+        <label for="param10">Min Impurity Decrease</label>
+        <input type="text" name="Param10" id="Param10" value="0.0" pattern="[0-9]+(\.[0-9]+)?" title="Entrez un nombre à virgule flottante">
+        <p>Description : A node will be split if this split induces a decrease of the impurity greater than or equal to this value.</p>
+    </div>
+
+    <div>
+        <label for="param11">Class Weight</label>
+        <input type="text" name="Param11" id="Param11" value="None">
+        <p>Description : Weights associated with classes in the form {class_label: weight}.</p>
+    </div>
+
+    <div>
+        <label for="param12">CCP Alpha</label>
+        <input type="text" name="Param12" id="Param12" value="0.0" pattern="[0-9]+(\.[0-9]+)?" title="Entrez un nombre à virgule flottante">
+        <p>Description : Complexity parameter used for Minimal Cost-Complexity Pruning.</p>
+    </div>
+
+    <div>
+        <label for="param13">Monotonic Constraint</label>
+        <input type="text" name="Param13" id="Param13" pattern="(\d+,)*\d+" title="Entrez une liste d'entiers séparés par des virgules">
+        <p>Description : Indicates the monotonicity constraint to enforce on each feature.</p>
+    </div>
+
 
     <div class="conteneur-bouton">
         <button class="bouton-envoyer">Valider</button>

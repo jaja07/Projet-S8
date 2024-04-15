@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "RandomForestClassifier";
+    ViewData["Title"] = "ExtraTreesClassifier";
 }
 <style>
     .conteneur-bouton {
@@ -76,8 +76,53 @@
     </div>
 
     <div>
-        <label for="param10">class_weight</label>
+        <label for="param10">bootstrap</label>
         <select name="Param10" id="Param10">
+            <option value="True">True</option>
+            <option value="False" selected>False</option>
+        </select>
+        <p>Description : Whether bootstrap samples are used when building trees.</p>
+    </div>
+
+    <div>
+        <label for="param11">oob_score</label>
+        <select name="Param11" id="Param11">
+            <option value="True">True</option>
+            <option value="False" selected>False</option>
+        </select>
+        <p>Description : Whether to use out-of-bag samples to estimate the generalization score.</p>
+    </div>
+
+    <div>
+        <label for="param12">n_jobs</label>
+        <input type="text" name="Param12" id="Param12" value="None">
+        <p>Description : The number of jobs to run in parallel.</p>
+    </div>
+
+    <div>
+        <label for="param13">random_state</label>
+        <input type="text" name="Param13" id="Param13" value="None">
+        <p>Description : Controls the randomness of the bootstrapping and feature sampling.</p>
+    </div>
+
+    <div>
+        <label for="param14">verbose</label>
+        <input type="text" name="Param14" id="Param14" value="0">
+        <p>Description : Controls the verbosity when fitting and predicting.</p>
+    </div>
+
+    <div>
+        <label for="param15">warm_start</label>
+        <select name="Param15" id="Param15">
+            <option value="True">True</option>
+            <option value="False" selected>False</option>
+        </select>
+        <p>Description : Reuse the solution of the previous call to fit and add more estimators to the ensemble.</p>
+    </div>
+
+    <div>
+        <label for="param16">class_weight</label>
+        <select name="Param16" id="Param16">
             <option value="None" selected>None</option>
             <option value="balanced">Balanced</option>
             <option value="balanced_subsample">Balanced Subsample</option>
@@ -86,18 +131,22 @@
     </div>
 
     <div>
-        <label for="param11">ccp_alpha</label>
-        <input type="text" name="Param11" id="Param11" value="0.0">
+        <label for="param17">ccp_alpha</label>
+        <input type="text" name="Param17" id="Param17" value="0.0">
         <p>Description : Complexity parameter used for Minimal Cost-Complexity Pruning.</p>
     </div>
 
     <div>
-        <label for="param12">monotonic_cst</label>
-        <input type="text" name="Param12" id="Param12" value="None">
-        <p>Description : Indicates the monotonicity constraint to enforce on each feature.</p>
+        <label for="param18">max_samples</label>
+        <input type="text" name="Param18" id="Param18" value="None">
+        <p>Description : If bootstrap is True, the number of samples to draw from X to train each base estimator.</p>
     </div>
 
-
+    <div>
+        <label for="param19">monotonic_cst</label>
+        <input type="text" name="Param19" id="Param19" value="None">
+        <p>Description : Indicates the monotonicity constraint to enforce on each feature.</p>
+    </div>
 
 
     <div class="conteneur-bouton">
