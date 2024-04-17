@@ -1,0 +1,2 @@
+Prototype/.vs/Prototype/FileContentIndex/00d258b2-1973-471c-9374-89616182aa79.vsidx
+TestS8/.vs/
