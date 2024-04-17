@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\TestS8.props" />
+</Project>
