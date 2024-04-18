@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TestS8.Models;
 
@@ -13,12 +15,13 @@ namespace TestS8.Controllers
             _logger = logger;
         }
 
+      
         public IActionResult Index()
         {
             return View();
         }
 
-
+        [Authorize(Roles ="Admin")]
         public IActionResult Privacy()
         {
             return View();

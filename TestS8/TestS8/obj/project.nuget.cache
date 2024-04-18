@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZYc8dN0ESf9xEjbYTXcZi2SXlb18FciDN6HL9YPQB3vE1CAnV7ofkSF5UPxoPdJOQOGcsBW+fBCvMbS6TAKVFA==",
+  "dgSpecHash": "h1sflCZG6ngLL5/wIBasOhwqVztfQC0ZzxMExOpS6j30ZCoUYMmT5k+xLxYnFCjmF+Suy5YcD+qOaaVgDOUcHA==",
   "success": true,
-  "projectFilePath": "D:\\C#\\TestS8\\TestS8\\TestS8.csproj",
+  "projectFilePath": "D:\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\HP\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\HP\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
