@@ -98,7 +98,7 @@
     </style>
 </head>
 <body>
-    <h1 class="welcome-title">Bienvenue</h1>
+    <h1 class="welcome-title">Bienvenue sur notre site</h1>
     <ul class="Menu">
         <li>
             <input type="checkbox" id="checkbox-Analytique" name="method" value="Analytique" onclick="showForm('Analytique')">
@@ -106,21 +106,13 @@
             <div id="form-container-Analytique" class="form-container">
                 <form method="get" action="">
                     <!-- Formulaire pour Analytique -->
+
                     <div class="conteneur-bouton">
                         <button type="submit" class="bouton-envoyer">Valider</button>
                     </div>
                 </form>
             </div>
-
-            <div id="import-section-Analytique" class="import-section" style="display: none;">
-                <form method="get" action="">
-                    <label for="file">Importer un fichier :</label>
-                    <input type="file" id="file" name="file">
-                </form>
-            </div>
         </li>
-
-
         <li>
             <input type="checkbox" id="checkbox-KNN" name="method" value="KNN" onclick="showForm('KNN')">
             <label for="checkbox-KNN">Méthode KNN</label>
@@ -156,7 +148,14 @@
                             Détail : Il s'agit de la métrique à utiliser pour le calcul de la distance
                         </p>
                     </div>
-
+                    <div>
+                        <label for="test">Test</label>
+                        <input type="number" name="test" id="test">
+                    </div>
+                    <div>
+                        <label for="Entraine">Entrainement</label>
+                        <input type="number" name="Entraine" id="Entraine">
+                    </div>
                     <div class="conteneur-bouton">
                         <button type="submit" class="bouton-envoyer">Valider</button>
                     </div>
@@ -183,7 +182,14 @@
                             Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
                         </p>
                     </div>
-                    
+                    <div>
+                        <label for="test">Test</label>
+                        <input type="number" name="test" id="test">
+                    </div>
+                    <div>
+                        <label for="Entraine">Entrainement</label>
+                        <input type="number" name="Entraine" id="Entraine">
+                    </div>
 
                     <div class="conteneur-bouton">
                         <button type="submit" class="bouton-envoyer">Valider</button>
@@ -227,7 +233,14 @@
                             frontière de décision
                         </p>
                     </div>
-                   
+                    <div>
+                        <label for="test">Test</label>
+                        <input type="number" name="test" id="test">
+                    </div>
+                    <div>
+                        <label for="Entraine">Entrainement</label>
+                        <input type="number" name="Entraine" id="Entraine">
+                    </div>
 
                     <div class="conteneur-bouton">
                         <button type="submit" class="bouton-envoyer">Valider</button>
@@ -245,25 +258,6 @@
                 formContainer.style.display = 'none';
             } else {
                 formContainer.style.display = 'block';
-            }
-
-            // Assure que le formulaire est affiché en bas de la carte
-            window.scrollTo({
-                top: formContainer.offsetTop,
-                behavior: 'smooth'
-            });
-
-        }
-        function showForm(methodName) {
-            var formContainer = document.getElementById('form-container-' + methodName);
-            var importSection = document.getElementById('import-section-' + methodName);
-
-            if (formContainer.style.display === 'block') {
-                formContainer.style.display = 'none';
-                importSection.style.display = 'none';
-            } else {
-                formContainer.style.display = 'block';
-                importSection.style.display = 'block';
             }
 
             // Assure que le formulaire est affiché en bas de la carte

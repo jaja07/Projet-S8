@@ -15,8 +15,28 @@ namespace TestS8.Controllers
             _logger = logger;
         }
 
-      
+
         public IActionResult Index()
+        {
+            if (User.IsInRole("Lambda"))
+            {
+                return RedirectToAction("Guest", "Home");
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("IndexAdmin", "Home");
+            }
+            else
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+        }
+        [Authorize(Roles = "Admin")]
+        public IActionResult IndexAdmin()
+        {
+            return View("Index");
+        }
+        
+        [Authorize(Roles = "Lambda")]
+        public IActionResult Guest()
         {
             return View();
         }
