@@ -99,12 +99,20 @@
 </head>
 <body>
     <h1 class="welcome-title">Bienvenue</h1>
+    <div class="import-section">
+        <form method="post" asp-action="Upload" enctype="multipart/form-data">
+            <label for="file">Archive :</label>
+            <input type="file" id="file" name="file" required>
+
+            <input type="submit" value="Importer">
+        </form>
+    </div>
     <ul class="Menu">
         <li>
             <input type="checkbox" id="checkbox-Analytique" name="method" value="Analytique" onclick="showForm('Analytique')">
             <label for="checkbox-Analytique">Méthode Analytique</label>
             <div id="form-container-Analytique" class="form-container">
-                <form method="get" action="">
+                <form method="post" asp-action="Analytical">
                     <!-- Formulaire pour Analytique -->
                     <div class="conteneur-bouton">
                         <button type="submit" class="bouton-envoyer">Valider</button>
@@ -125,19 +133,18 @@
             <input type="checkbox" id="checkbox-KNN" name="method" value="KNN" onclick="showForm('KNN')">
             <label for="checkbox-KNN">Méthode KNN</label>
             <div id="form-container-KNN" class="form-container">
-                <form method="get" action="">
+                <form method="post" asp-action="KNN">
                     <!-- Formulaire pour KNN -->
                     <div>
-                        <label for="n_neighbors">n_neighbors</label>
-                        <input type="number" name="n_neighbors" id="n_neighbors" value="5" data-default="5">
+                        <label for="Param1">n_neighbors</label>
+                        <input type="number" name="Param1" id="Param1" value="5" data-default="5">
                         <p>
                             Détail : Il s'agit du nombre de voisins à utiliser par défaut pour les requêtes.
                         </p>
                     </div>
                     <div>
-                        <label for="weight">weight</label>
-                        <select name="weight" id="Select">
-
+                        <label for="Param3">weight</label>
+                        <select name="Param3" id="Param3">
                             <option value="uniform">uniform</option>
                             <option value="distance">distance</option>
                         </select>
@@ -146,14 +153,21 @@
                         </p>
                     </div>
                     <div>
-                        <label for="metric">metric</label>
-                        <select name="metric" id="paramSelect">
-                            <option value="minkowski">minkowski</option>
+                        <label for="algorithm">Algorithm</label>
+                        <select id="Param3" name="Param3">
+                            <option value="auto">auto</option>
                             <option value="euclidean">euclidean</option>
                             <option value="manhattan">manhattan</option>
                         </select>
                         <p>
                             Détail : Il s'agit de la métrique à utiliser pour le calcul de la distance
+                        </p>
+                    </div>
+                    <div>
+                        <label for="Param4">p_knn</label>
+                        <input type="number" name="Param4" id="Param4" value="5" data-default="5">
+                        <p>
+                            Détail : Il s'agit du nombre de voisins à utiliser par défaut pour les requêtes.
                         </p>
                     </div>
 
@@ -167,7 +181,7 @@
             <input type="checkbox" id="checkbox-RandomForest" name="method" value="RandomForest" onclick="showForm('RandomForest')">
             <label for="checkbox-RandomForest">Méthode RandomForest</label>
             <div id="form-container-RandomForest" class="form-container">
-                <form method="get" action="">
+                <form method="post" asp-action="RandomForest">
                     <!-- Formulaire pour RandomForest -->
                     <div>
                         <label for="Param1">n_estimators</label>
@@ -177,14 +191,33 @@
                         </p>
                     </div>
                     <div>
-                        <label for="Param3">max_depth</label>
-                        <input type="number" name="Param3" id="Param3" value="0" data-default="0" min="0">
+                        <label for="Param2">max_depth</label>
+                        <input type="number" name="Param2" id="Param2" value="10" data-default="10" min="0">
                         <p>
                             Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
                         </p>
                     </div>
-                    
-
+                    <div>
+                        <label for="Param3">min_samples_split</label>
+                        <input type="number" name="Param3" id="Param3" value="2" data-default="2" min="0">
+                        <p>
+                            Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
+                        </p>
+                    </div>
+                    <div>
+                        <label for="Param4">min_samples_leaf</label>
+                        <input type="number" name="Param4" id="Param4" value="0" data-default="0" min="0">
+                        <p>
+                            Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
+                        </p>
+                    </div>
+                    <div>
+                        <label for="Param5">Bootstrap</label>
+                        <input type="text" name="Param5" id="Param5">
+                        <p>
+                            Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
+                        </p>
+                    </div>
                     <div class="conteneur-bouton">
                         <button type="submit" class="bouton-envoyer">Valider</button>
                     </div>
@@ -227,7 +260,7 @@
                             frontière de décision
                         </p>
                     </div>
-                   
+
 
                     <div class="conteneur-bouton">
                         <button type="submit" class="bouton-envoyer">Valider</button>
@@ -236,6 +269,16 @@
             </div>
         </li>
     </ul>
+
+    <div class="col-md-8">
+        <div class="result">
+            @if (ViewBag.Result != null)
+            {
+                <h4>Result:</h4>
+                <pre>@Html.Raw(ViewBag.Result)</pre>
+            }
+        </div>
+    </div>
 
     <!-- Script JavaScript -->
     <script>
