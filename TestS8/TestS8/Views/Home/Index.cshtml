@@ -99,14 +99,6 @@
 </head>
 <body>
     <h1 class="welcome-title">Bienvenue</h1>
-    <div class="import-section">
-        <form method="post" asp-action="Upload" enctype="multipart/form-data">
-            <label for="file">Archive :</label>
-            <input type="file" id="file" name="file" required>
-
-            <input type="submit" value="Importer">
-        </form>
-    </div>
     <ul class="Menu">
         <li>
             <input type="checkbox" id="checkbox-Analytique" name="method" value="Analytique" onclick="showForm('Analytique')">
