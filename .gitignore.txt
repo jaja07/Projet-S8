@@ -1,2 +1,26 @@
-Prototype/.vs/Prototype/FileContentIndex/00d258b2-1973-471c-9374-89616182aa79.vsidx
-TestS8/.vs/
+# Fichiers de configuration de l'IDE
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Dossiers Bin et Obj
+**/[Bb]in/
+**/[Oo]bj/
+**/[Ll]og/
+
+# Fichiers générés lors de la build
+*.exe
+*.dll
+*.pdb
+*.cache
+*.sourcelink.json
+*.AssemblyInfo.cs
+*.dtbcache.v2
+*.exe.config
+*.json
+
+# Fichiers spécifiques à TestS8
+TestS8/TestS8/bin/
+TestS8/TestS8/obj/
