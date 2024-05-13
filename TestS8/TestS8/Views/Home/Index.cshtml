@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Accueil";
 }
+@model  TestS8.Models.Methods
 
 <!DOCTYPE html>
 <html lang="en">
@@ -98,45 +99,42 @@
     </style>
 </head>
 <body>
+    <!-- Titre -->
     <h1 class="welcome-title">Bienvenue</h1>
-    <ul class="Menu">
-        <li>
-            <input type="checkbox" id="checkbox-Analytique" name="method" value="Analytique" onclick="showForm('Analytique')">
-            <label for="checkbox-Analytique">Méthode Analytique</label>
-            <div id="form-container-Analytique" class="form-container">
-                <form method="post" asp-action="Analytical">
-                    <!-- Formulaire pour Analytique -->
-                    <div class="conteneur-bouton">
-                        <button type="submit" class="bouton-envoyer">Valider</button>
-                    </div>
-                </form>
-            </div>
 
-            <div id="import-section-Analytique" class="import-section" style="display: none;">
-                <form method="get" action="">
-                    <label for="file">Importer un fichier :</label>
-                    <input type="file" id="file" name="file">
-                </form>
-            </div>
-        </li>
+    <!-- Importer les fichiers de simulation -->
+    <div id="import" class="import-section" >
+        <form method="post" asp-action="Upload" enctype="multipart/form-data">
+            <label for="file">Importer un fichier :</label>
+            <input type="file" id="file" name="file">
+            <button type="submit" class="bouton-envoyer">Envoyer</button>
+        </form>
+    </div>
 
+    <!-- Menu des méthodes analytiques et de machine learning -->
+    <form method="post" asp-action="Valider">
+        <ul>
+            <li>
+                <input type="checkbox" asp-for="Analytique" onclick="showForm('Analytique')">
+                <label asp-for="Analytique">Méthode Analytique</label>
+            </li>
 
-        <li>
-            <input type="checkbox" id="checkbox-KNN" name="method" value="KNN" onclick="showForm('KNN')">
-            <label for="checkbox-KNN">Méthode KNN</label>
-            <div id="form-container-KNN" class="form-container">
-                <form method="post" asp-action="KNN">
+            <!--KNN-->
+            <li>
+                <input type="checkbox" asp-for="KNN" onclick="showForm('KNN')">
+                <label asp-for="KNN">Méthode KNN</label>
+                <div id="form-container-KNN" class="form-container">
                     <!-- Formulaire pour KNN -->
                     <div>
-                        <label for="Param1">n_neighbors</label>
-                        <input type="number" name="Param1" id="Param1" value="5" data-default="5">
+                        <label asp-for="n_neighbors">n_neighbors</label>
+                        <input type="number" asp-for="n_neighbors" value="5">
                         <p>
                             Détail : Il s'agit du nombre de voisins à utiliser par défaut pour les requêtes.
                         </p>
                     </div>
                     <div>
-                        <label for="Param3">weight</label>
-                        <select name="Param3" id="Param3">
+                        <label asp-for="weights">weight</label>
+                        <select asp-for="weights">
                             <option value="uniform">uniform</option>
                             <option value="distance">distance</option>
                         </select>
@@ -145,8 +143,8 @@
                         </p>
                     </div>
                     <div>
-                        <label for="algorithm">Algorithm</label>
-                        <select id="Param3" name="Param3">
+                        <label asp-for="algorithm">Algorithm</label>
+                        <select asp-for="algorithm">
                             <option value="auto">auto</option>
                             <option value="euclidean">euclidean</option>
                             <option value="manhattan">manhattan</option>
@@ -156,82 +154,76 @@
                         </p>
                     </div>
                     <div>
-                        <label for="Param4">p_knn</label>
-                        <input type="number" name="Param4" id="Param4" value="5" data-default="5">
+                        <label asp-for="p_knn">p_knn</label>
+                        <input type="number" asp-for="p_knn" value="5" data-default="5">
                         <p>
                             Détail : Il s'agit du nombre de voisins à utiliser par défaut pour les requêtes.
                         </p>
                     </div>
 
-                    <div class="conteneur-bouton">
-                        <button type="submit" class="bouton-envoyer">Valider</button>
-                    </div>
-                </form>
-            </div>
-        </li>
-        <li>
-            <input type="checkbox" id="checkbox-RandomForest" name="method" value="RandomForest" onclick="showForm('RandomForest')">
-            <label for="checkbox-RandomForest">Méthode RandomForest</label>
-            <div id="form-container-RandomForest" class="form-container">
-                <form method="post" asp-action="RandomForest">
+                </div>
+            </li>
+
+            <!--Random Forest-->
+            <li>
+                <input type="checkbox" asp-for="RandomForest" onclick="showForm('RandomForest')">
+                <label asp-for="RandomForest">Méthode RandomForest</label>
+                <div id="form-container-RandomForest" class="form-container">
                     <!-- Formulaire pour RandomForest -->
                     <div>
-                        <label for="Param1">n_estimators</label>
-                        <input type="number" name="Param1" id="Param1" value="100" data-default="100" min=" 100">
+                        <label for="n_estimator">n_estimators</label>
+                        <input type="number" asp-for="n_estimators" value="100" data-default="100" min=" 100">
                         <p>
                             Détail : Il s'agit du nombre d'arbres dans la forêt.
                         </p>
                     </div>
                     <div>
-                        <label for="Param2">max_depth</label>
-                        <input type="number" name="Param2" id="Param2" value="10" data-default="10" min="0">
+                        <label asp-for="max_depth">max_depth</label>
+                        <input type="number" asp-for="max_depth" value="10" data-default="10" min="0">
                         <p>
                             Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
                         </p>
                     </div>
                     <div>
-                        <label for="Param3">min_samples_split</label>
-                        <input type="number" name="Param3" id="Param3" value="2" data-default="2" min="0">
+                        <label asp-for="min_samples_split">min_samples_split</label>
+                        <input type="number" asp-for="min_samples_split" value="2" data-default="2" min="0">
                         <p>
                             Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
                         </p>
                     </div>
                     <div>
-                        <label for="Param4">min_samples_leaf</label>
-                        <input type="number" name="Param4" id="Param4" value="0" data-default="0" min="0">
+                        <label asp-for="min_samples_leaf">min_samples_leaf</label>
+                        <input type="number" asp-for="min_samples_leaf" value="0" data-default="0" min="0">
                         <p>
                             Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
                         </p>
                     </div>
                     <div>
-                        <label for="Param5">Bootstrap</label>
-                        <input type="text" name="Param5" id="Param5">
+                        <label asp-for="bootstrap">Bootstrap</label>
+                        <input type="text" asp-for="bootstrap">
                         <p>
                             Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
                         </p>
                     </div>
-                    <div class="conteneur-bouton">
-                        <button type="submit" class="bouton-envoyer">Valider</button>
-                    </div>
-                </form>
-            </div>
-        </li>
-        <li>
-            <input type="checkbox" id="checkbox-SVM" name="method" value="SVM" onclick="showForm('SVM')">
-            <label for="checkbox-SVM">Méthode SVM</label>
-            <div id="form-container-SVM" class="form-container">
-                <form method="get" action="">
+                </div>
+            </li>
+
+            <!--SVM-->
+            <li>
+                <input type="checkbox" asp-for="SVM" onclick="showForm('SVM')">
+                <label asp-for="SVM">Méthode SVM</label>
+                <div id="form-container-SVM" class="form-container">
                     <!-- Formulaire pour SVM -->
                     <div>
-                        <label for="Param1">C</label>
-                        <input type="number" name="Param1" id="Param1" value="1" data-default="1" step="0.1" min="1">
+                        <label asp-for="C">C</label>
+                        <input type="number" asp-for=C value="1" data-default="1" step="0.1" min="1">
                         <p>
                             Détail : Il s'agit du paramètre de régularisation
                         </p>
                     </div>
                     <div>
-                        <label for="kernel">Kernel</label>
-                        <select name="kernel" id="paramSelect">
+                        <label asp-for="kernel">Kernel</label>
+                        <select asp-for="kernel">
                             <option value="rbf">rbf</option>
                             <option value="linear">linear</option>
                             <option value="poly">poly</option>
@@ -242,25 +234,31 @@
                         </p>
                     </div>
                     <div>
-                        <label for="gamma">Gamma</label>
-                        <select name="gamma" id="paramSelect">
-                            <option value="scale">scale</option>
-                            <option value="auto">auto</option>
+                        <label asp-for="probability">Probability</label>
+                        <select asp-for="probability">
+                            <option value="True">True</option>
+                            <option value="False">False</option>
                         </select>
                         <p>
-                            Détail : C'est un hyperparamètre de régularisation qui contrôle la flexibilité de la
-                            frontière de décision
+                            Détail : Activation ou non des estimations de probabilité. Cela doit être activé avant d'appeler fit, ce qui ralentira cette méthode car elle utilise en interne la validation croisée 5 fois, et predict_proba peut être incohérent avec predict
                         </p>
                     </div>
-
-
-                    <div class="conteneur-bouton">
-                        <button type="submit" class="bouton-envoyer">Valider</button>
+                    <div>
+                        <label asp-for="tol">tol</label>
+                        <input type="number" asp-for=tol value="1e-3">
+                        <p>
+                            Détail : Tolérance pour le critère d'arrêt.
+                        </p>
                     </div>
-                </form>
-            </div>
-        </li>
-    </ul>
+                </div>
+            </li>
+        </ul>
+
+        <div class="conteneur-bouton">
+            <button type="submit" class="bouton-envoyer">Valider</button>
+        </div>
+    </form>
+                                                                 
 
     <div class="col-md-8">
         <div class="result">

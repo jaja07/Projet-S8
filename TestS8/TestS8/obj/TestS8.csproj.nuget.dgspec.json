@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jarfi\\OneDrive\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj": {}
+    "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jarfi\\OneDrive\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj": {
+    "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jarfi\\OneDrive\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
+        "projectUniqueName": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
         "projectName": "TestS8",
-        "projectPath": "C:\\Users\\jarfi\\OneDrive\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
+        "projectPath": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
         "packagesPath": "C:\\Users\\jarfi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jarfi\\OneDrive\\Bureau\\Projet-S8\\TestS8\\TestS8\\obj\\",
+        "outputPath": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\jarfi\\AppData\\Roaming\\NuGet\\NuGet.Config",

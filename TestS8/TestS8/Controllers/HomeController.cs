@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.IO;
 using TestS8.Models;
 
 namespace TestS8.Controllers
@@ -16,33 +17,144 @@ namespace TestS8.Controllers
             _logger = logger;
         }
 
+
+        public IActionResult Index()
+        {
+            if (User.IsInRole("Lambda"))
+            {
+                return RedirectToAction("Guest", "Home");
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("IndexAdmin", "Home");
+            }
+            else
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+
+            var model = new Methods
+            {
+
+            };
+            return View(model);
+        }
+
         public async Task<IActionResult> Upload(IFormFile file)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
         {
             // Chemin de destination pour enregistrer le fichier dans le sous-répertoire spécifié
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), file.FileName);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(),"Python", "data.zip");
 
             // Enregistrement du fichier sur le serveur
             using (var stream = new FileStream(filePath, FileMode.Create)) // Créer un flux de fichier pour enregistrer le fichier
             {
                 await file.CopyToAsync(stream); // Copier les données du fichier téléchargé dans le flux de fichier de destination
             }
-            return View("Index");
-        }
-
-        public async Task<IActionResult> Analytical()  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
-        {
-            // Récupérer le lien du fichier uploadé et l'envoter dans la requpete http au serveur python
-            // Préparation de la requête http à envoyer au service python (flask_api_test.py)
             using (var client = new HttpClient())
             {
-                var response = await client.PostAsync("http://localhost:5000/analytical", null);
-                var result = await response.Content.ReadAsStringAsync();
+                var response = await client.PostAsync("http://localhost:5000/pretraitement", null);
 
-                ViewBag.Result = result;
             }
-
             return View("Index");
         }
+
+        public async Task<IActionResult> Valider(Methods model)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Analytique)
+                {
+                    // Récupérer le lien du fichier uploadé et l'envoyer dans la requpete http au serveur python
+                    // Préparation de la requête http à envoyer au service python (flask_api_test.py)
+                    using (var client = new HttpClient())
+                    {
+                        var response = await client.PostAsync("http://localhost:5000/analytical", null);
+                        var result = await response.Content.ReadAsStringAsync();
+
+                        ViewBag.Result = result;
+                    }
+                }
+                if (model.KNN)
+                {
+                    // Préparation de la requête http à envoyer au service python (flask_api_test.py)
+                    using (var client = new HttpClient())
+                    {
+                        var requestData = new
+                        {
+                            Parameter1 = model.n_neighbors,
+                            Parameter2 = model.weights,
+                            Parameter3 = model.algorithm,
+                            Parameter4 = model.p_knn
+                        };
+
+                        var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
+                        var response = await client.PostAsync("http://localhost:5000/knn", content);
+                        var result = await response.Content.ReadAsStringAsync();
+                        ViewBag.Result = result;
+                    }
+                }
+                if (model.RandomForest)
+                {
+                    // Préparation de la requête http à envoyer au service python (flask_api_test.py)
+                    using (var client = new HttpClient())
+                    {
+                        var requestData = new
+                        {
+                            Parameter1 = model.n_estimators,
+                            Parameter2 = model.max_depth,
+                            Parameter3 = model.min_samples_split,
+                            Parameter4 = model.min_samples_leaf,
+                            Parameter5 = model.bootstrap
+                        };
+
+                        var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
+                        var response = await client.PostAsync("http://localhost:5000/randomforest", content);
+                        var result = await response.Content.ReadAsStringAsync();
+                        ViewBag.Result = result;
+                    }
+                    
+                }
+                if (model.SVM)
+                {
+                    // Préparation de la requête http à envoyer au service python (flask_api_test.py)
+                    using (var client = new HttpClient())
+                    {
+                        var requestData = new
+                        {
+                            Parameter1 = model.kernel,
+                            Parameter2 = model.C,
+                            Parameter3 = model.probability,
+                            Parameter4 = model.tol
+                        };
+
+                        var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
+                        var response = await client.PostAsync("http://localhost:5000/svm", content);
+                        var result = await response.Content.ReadAsStringAsync();
+                        ViewBag.Result = result;
+                    }
+                }
+            }
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Python", "data.zip");
+            var filePath2 = Path.Combine(Directory.GetCurrentDirectory(), "Python", "data_anonymous");
+            try
+            {
+                // Suppression du fichier
+                System.IO.File.Delete(filePath);
+                //System.IO.File.Delete(filePath2);
+                Console.WriteLine("Fichier supprimé avec succès.");
+            }
+            catch (IOException ioExp)
+            {
+                Console.WriteLine("Erreur lors de la suppression du fichier: " + ioExp.Message);
+            }
+            catch (UnauthorizedAccessException unAuthExp)
+            {
+                Console.WriteLine("Accès refusé: " + unAuthExp.Message);
+            }
+            // Rediriger vers une autre vue ou retourner un résultat
+            //return RedirectToAction("SuccessPage");
+            return View("Index");
+        }
+
 
         public async Task<IActionResult> RandomForest(int Param1, int Param2, int Param3, int Param4, string Param5)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
         {
@@ -86,19 +198,7 @@ namespace TestS8.Controllers
             }
             return View("Index");
         }
-        public IActionResult Index()
-        {
-            if (User.IsInRole("Lambda"))
-            {
-                return RedirectToAction("Guest", "Home");
-            }
-            else if (User.IsInRole("Admin"))
-            {
-                return RedirectToAction("IndexAdmin", "Home");
-            }
-            else
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
-        }
+
         [Authorize(Roles = "Admin")]
         public IActionResult IndexAdmin()
         {
