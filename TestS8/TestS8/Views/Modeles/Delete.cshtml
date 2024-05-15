@@ -1,0 +1,51 @@
+﻿@model TestS8.Models.Modele
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Modele</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Accuracy)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Accuracy)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Hyperparametre)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Hyperparametre)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nom)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nom)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Accuracy_cross)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Accuracy_cross)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Simulation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Simulation.IdSimul)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdModele" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
