@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1Y22bFHZ/Xl/rQ6chkMkE2yyin9WGjUfOO2qQ1fbPU7LnI6s7SkAPbsHqqOCWYBnNA3n18f527hrgM3Uy0AdKA==",
+  "dgSpecHash": "xsmNGiNDgRwXqZ3U42cF2YuKG7KVUIFejc2v2+VMbtnZfO/2U6dgqnzbR+iAbuQzWjj2gAPTONKcKXbtGAQS+g==",
   "success": true,
   "projectFilePath": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
   "expectedPackageFiles": [
@@ -126,7 +126,7 @@
     "C:\\Users\\jarfi\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\jarfi\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\jarfi\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
-    "C:\\Users\\jarfi\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\jarfi\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\jarfi\\.nuget\\packages\\nuget.common\\6.6.1\\nuget.common.6.6.1.nupkg.sha512",
     "C:\\Users\\jarfi\\.nuget\\packages\\nuget.configuration\\6.6.1\\nuget.configuration.6.6.1.nupkg.sha512",
     "C:\\Users\\jarfi\\.nuget\\packages\\nuget.dependencyresolver.core\\6.6.1\\nuget.dependencyresolver.core.6.6.1.nupkg.sha512",

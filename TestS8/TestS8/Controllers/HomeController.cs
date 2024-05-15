@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO;
@@ -68,8 +69,12 @@ namespace TestS8.Controllers
                     {
                         var response = await client.PostAsync("http://localhost:5000/analytical", null);
                         var result = await response.Content.ReadAsStringAsync();
+                        //var result = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(jsonString);
+                        //decimal analytique = result["accuracy"];
+                        //var analytique = JsonConvert.DeserializeObject<decimal>(result);
 
-                        ViewBag.Result = result;
+
+                        ViewBag.Analytique = result;
                     }
                 }
                 if (model.KNN)
@@ -88,7 +93,7 @@ namespace TestS8.Controllers
                         var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
                         var response = await client.PostAsync("http://localhost:5000/knn", content);
                         var result = await response.Content.ReadAsStringAsync();
-                        ViewBag.Result = result;
+                        ViewBag.KNN = result;
                     }
                 }
                 if (model.RandomForest)
@@ -108,7 +113,7 @@ namespace TestS8.Controllers
                         var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
                         var response = await client.PostAsync("http://localhost:5000/randomforest", content);
                         var result = await response.Content.ReadAsStringAsync();
-                        ViewBag.Result = result;
+                        ViewBag.Randomforest = result;
                     }
                     
                 }
@@ -128,7 +133,7 @@ namespace TestS8.Controllers
                         var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
                         var response = await client.PostAsync("http://localhost:5000/svm", content);
                         var result = await response.Content.ReadAsStringAsync();
-                        ViewBag.Result = result;
+                        ViewBag.SVM = result;
                     }
                 }
             }

@@ -2,6 +2,26 @@
     ViewData["Title"] = "Accueil";
 }
 @model  TestS8.Models.Methods
+@{
+    float ExtractNumber(string result)
+    {
+        if (!string.IsNullOrEmpty(result))
+        {
+
+            dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
+            if (jsonResult != null && jsonResult.accuracy != null)
+            {
+                //  accuracy
+                return (float)jsonResult.accuracy;
+            }
+        }
+        return 0; 
+    }
+    string analytique = ExtractNumber(ViewBag.Analytique).ToString().Replace(",", ".");
+    string knn = ExtractNumber(ViewBag.KNN).ToString().Replace(",", ".");
+    string svm = ExtractNumber(ViewBag.SVM).ToString().Replace(",", ".");
+    string randomforest = ExtractNumber(ViewBag.Randomforest).ToString().Replace(",", "."); ;
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -262,13 +282,58 @@
 
     <div class="col-md-8">
         <div class="result">
-            @if (ViewBag.Result != null)
+            <h4>Result:</h4>
+            @if (ViewBag.Analytique != null)
             {
-                <h4>Result:</h4>
-                <pre>@Html.Raw(ViewBag.Result)</pre>
+                <pre>@Html.Raw(ViewBag.Analytique)</pre>
+            }
+            @if (ViewBag.Randomforest != null)
+            {
+                <pre>@Html.Raw(ViewBag.Randomforest)</pre>
+            }
+            @if (ViewBag.KNN != null)
+            {
+                <pre>@Html.Raw(ViewBag.KNN)</pre>
+            }
+            @if (ViewBag.SVM != null)
+            {
+                <pre>@Html.Raw(ViewBag.SVM)</pre>
             }
         </div>
     </div>
+
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        function updateChart(selectedOptions) {
+            const ctx = document.getElementById('myChart');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Analytique', 'Random Forest', 'SVM', 'KNN'],
+                    datasets: [{
+                    label: '# of Votes',
+                    data: selectedOptions,
+                    borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        //updateChart([0.97, @randomforest, @svm, 0.3 ]);
+
+        updateChart([@analytique, @randomforest, @svm, @knn]);
+    </script>
 
     <!-- Script JavaScript -->
     <script>
