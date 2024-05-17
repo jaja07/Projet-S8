@@ -18,21 +18,15 @@
             @Html.DisplayFor(model => model.Date)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Duree_simul)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Duree_simul)
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Utilisateur)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Utilisateur.Id)
+            @Html.DisplayFor(model => model.Utilisateur.UtilisateurID)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="IdSimul" />
+        <input type="hidden" asp-for="SimulationID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

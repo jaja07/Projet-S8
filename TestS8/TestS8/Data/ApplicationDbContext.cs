@@ -10,8 +10,9 @@ namespace TestS8.Data
             : base(options)
         {
         }
+        public DbSet<TestS8.Models.Utilisateur>? Utilisateur { get; set; }
+        public DbSet<TestS8.Models.Simulation>? Simulation { get; set; }
         public DbSet<TestS8.Models.Modele>? Modele { get; set; }
         public DbSet<TestS8.Models.Plot>? Plot { get; set; }
-        public DbSet<TestS8.Models.Simulation>? Simulation { get; set; }
     }
 }

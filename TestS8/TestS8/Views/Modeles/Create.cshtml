@@ -13,19 +13,14 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Accuracy" class="control-label"></label>
-                <input asp-for="Accuracy" class="form-control" />
-                <span asp-validation-for="Accuracy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Hyperparametre" class="control-label"></label>
-                <input asp-for="Hyperparametre" class="form-control" />
-                <span asp-validation-for="Hyperparametre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Nom" class="control-label"></label>
                 <input asp-for="Nom" class="form-control" />
                 <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Accuracy" class="control-label"></label>
+                <input asp-for="Accuracy" class="form-control" />
+                <span asp-validation-for="Accuracy" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Accuracy_cross" class="control-label"></label>
@@ -33,8 +28,18 @@
                 <span asp-validation-for="Accuracy_cross" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SimulationId" class="control-label"></label>
-                <select asp-for="SimulationId" class ="form-control" asp-items="ViewBag.SimulationId"></select>
+                <label asp-for="Hyperparametre" class="control-label"></label>
+                <input asp-for="Hyperparametre" class="form-control" />
+                <span asp-validation-for="Hyperparametre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Duree_simul" class="control-label"></label>
+                <input asp-for="Duree_simul" class="form-control" />
+                <span asp-validation-for="Duree_simul" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SimulationID" class="control-label"></label>
+                <select asp-for="SimulationID" class ="form-control" asp-items="ViewBag.SimulationID"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

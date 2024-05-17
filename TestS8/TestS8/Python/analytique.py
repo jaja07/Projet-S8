@@ -8,9 +8,6 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 from config import dataframe
 
 
-
-
-
 def analytical():
     df_timing_slices = dataframe['df_timing_slices']
     timing_slices = dataframe['timing_slices']

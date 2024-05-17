@@ -16,6 +16,9 @@
                 @Html.DisplayNameFor(model => model.Chemin)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Nom)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Modele)
             </th>
             <th></th>
@@ -28,12 +31,15 @@
                 @Html.DisplayFor(modelItem => item.Chemin)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Modele.IdModele)
+                @Html.DisplayFor(modelItem => item.Nom)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdPlot">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdPlot">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdPlot">Delete</a>
+                @Html.DisplayFor(modelItem => item.Modele.ModeleID)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.PlotID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.PlotID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.PlotID">Delete</a>
             </td>
         </tr>
 }

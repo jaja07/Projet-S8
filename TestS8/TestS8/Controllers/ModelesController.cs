@@ -22,10 +22,30 @@ namespace TestS8.Controllers
         // GET: Modeles
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Modele.Include(m => m.Simulation);
+            var applicationDbContext = _context.Modele.Include(m => m.Simulation); 
             return View(await applicationDbContext.ToListAsync());
         }
 
+        public async Task<IActionResult> IndexSimul(int? id)
+        {
+            if (id == null || _context.Modele == null)
+            {
+                return NotFound();
+            }
+
+            // Eager loading with Include and Where clause
+            var modeles = await _context.Modele
+                .Include(m => m.Simulation)
+                .Where(m => m.Simulation.SimulationID == id) // Filter by SimulationID
+                .ToListAsync();
+
+            if (modeles.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return View(modeles);
+        }
         // GET: Modeles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -36,7 +56,7 @@ namespace TestS8.Controllers
 
             var modele = await _context.Modele
                 .Include(m => m.Simulation)
-                .FirstOrDefaultAsync(m => m.IdModele == id);
+                .FirstOrDefaultAsync(m => m.ModeleID == id);
             if (modele == null)
             {
                 return NotFound();
@@ -48,7 +68,7 @@ namespace TestS8.Controllers
         // GET: Modeles/Create
         public IActionResult Create()
         {
-            ViewData["SimulationId"] = new SelectList(_context.Set<Simulation>(), "IdSimul", "IdSimul");
+            ViewData["SimulationID"] = new SelectList(_context.Simulation, "SimulationID", "SimulationID");
             return View();
         }
 
@@ -57,7 +77,7 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdModele,Accuracy,Hyperparametre,Nom,Accuracy_cross,SimulationId")] Modele modele)
+        public async Task<IActionResult> Create([Bind("ModeleID,Nom,Accuracy,Accuracy_cross,Hyperparametre,Duree_simul,SimulationID")] Modele modele)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +85,7 @@ namespace TestS8.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SimulationId"] = new SelectList(_context.Set<Simulation>(), "IdSimul", "IdSimul", modele.SimulationId);
+            ViewData["SimulationID"] = new SelectList(_context.Simulation, "SimulationID", "SimulationID", modele.SimulationID);
             return View(modele);
         }
 
@@ -82,7 +102,7 @@ namespace TestS8.Controllers
             {
                 return NotFound();
             }
-            ViewData["SimulationId"] = new SelectList(_context.Set<Simulation>(), "IdSimul", "IdSimul", modele.SimulationId);
+            ViewData["SimulationID"] = new SelectList(_context.Simulation, "SimulationID", "SimulationID", modele.SimulationID);
             return View(modele);
         }
 
@@ -91,9 +111,9 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdModele,Accuracy,Hyperparametre,Nom,Accuracy_cross,SimulationId")] Modele modele)
+        public async Task<IActionResult> Edit(int id, [Bind("ModeleID,Nom,Accuracy,Accuracy_cross,Hyperparametre,Duree_simul,SimulationID")] Modele modele)
         {
-            if (id != modele.IdModele)
+            if (id != modele.ModeleID)
             {
                 return NotFound();
             }
@@ -107,7 +127,7 @@ namespace TestS8.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ModeleExists(modele.IdModele))
+                    if (!ModeleExists(modele.ModeleID))
                     {
                         return NotFound();
                     }
@@ -118,7 +138,7 @@ namespace TestS8.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SimulationId"] = new SelectList(_context.Set<Simulation>(), "IdSimul", "IdSimul", modele.SimulationId);
+            ViewData["SimulationID"] = new SelectList(_context.Simulation, "SimulationID", "SimulationID", modele.SimulationID);
             return View(modele);
         }
 
@@ -132,7 +152,7 @@ namespace TestS8.Controllers
 
             var modele = await _context.Modele
                 .Include(m => m.Simulation)
-                .FirstOrDefaultAsync(m => m.IdModele == id);
+                .FirstOrDefaultAsync(m => m.ModeleID == id);
             if (modele == null)
             {
                 return NotFound();
@@ -162,7 +182,7 @@ namespace TestS8.Controllers
 
         private bool ModeleExists(int id)
         {
-          return (_context.Modele?.Any(e => e.IdModele == id)).GetValueOrDefault();
+          return (_context.Modele?.Any(e => e.ModeleID == id)).GetValueOrDefault();
         }
     }
 }

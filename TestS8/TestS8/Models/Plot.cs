@@ -6,10 +6,10 @@ namespace TestS8.Models
     public class Plot
     {
         [Key]
-        public int IdPlot { get; set; }
+        public int PlotID { get; set; }
         public string Chemin { get; set; }
-        [ForeignKey("Modele")]
-        public int ModeleId { get; set; } // Clé étrangère
+        public string Nom {  get; set; }
+        public int ModeleID { get; set; }
         public Modele Modele { get; set; } // Association avec Modele
     }
 }

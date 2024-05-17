@@ -226,17 +226,20 @@ namespace TestS8.Data.Migrations
 
             modelBuilder.Entity("TestS8.Models.Modele", b =>
                 {
-                    b.Property<int>("IdModele")
+                    b.Property<int>("ModeleID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdModele"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ModeleID"), 1L, 1);
 
-                    b.Property<int>("Accuracy")
-                        .HasColumnType("int");
+                    b.Property<float>("Accuracy")
+                        .HasColumnType("real");
 
-                    b.Property<int>("Accuracy_cross")
-                        .HasColumnType("int");
+                    b.Property<float>("Accuracy_cross")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Duree_simul")
+                        .HasColumnType("real");
 
                     b.Property<string>("Hyperparametre")
                         .IsRequired()
@@ -246,71 +249,70 @@ namespace TestS8.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SimulationId")
+                    b.Property<int>("SimulationID")
                         .HasColumnType("int");
 
-                    b.HasKey("IdModele");
+                    b.HasKey("ModeleID");
 
-                    b.HasIndex("SimulationId");
+                    b.HasIndex("SimulationID");
 
                     b.ToTable("Modele");
                 });
 
             modelBuilder.Entity("TestS8.Models.Plot", b =>
                 {
-                    b.Property<int>("IdPlot")
+                    b.Property<int>("PlotID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPlot"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlotID"), 1L, 1);
 
                     b.Property<string>("Chemin")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ModeleId")
+                    b.Property<int>("ModeleID")
                         .HasColumnType("int");
 
-                    b.HasKey("IdPlot");
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("ModeleId");
+                    b.HasKey("PlotID");
+
+                    b.HasIndex("ModeleID");
 
                     b.ToTable("Plot");
                 });
 
             modelBuilder.Entity("TestS8.Models.Simulation", b =>
                 {
-                    b.Property<int>("IdSimul")
+                    b.Property<int>("SimulationID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdSimul"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SimulationID"), 1L, 1);
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Duree_simul")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("UtilisateurID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("UtilisateurId")
-                        .HasColumnType("int");
+                    b.HasKey("SimulationID");
 
-                    b.HasKey("IdSimul");
-
-                    b.HasIndex("UtilisateurId");
+                    b.HasIndex("UtilisateurID");
 
                     b.ToTable("Simulation");
                 });
 
             modelBuilder.Entity("TestS8.Models.Utilisateur", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("UtilisateurID")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.HasKey("Id");
+                    b.HasKey("UtilisateurID");
 
                     b.ToTable("Utilisateur");
                 });
@@ -370,7 +372,7 @@ namespace TestS8.Data.Migrations
                 {
                     b.HasOne("TestS8.Models.Simulation", "Simulation")
                         .WithMany("Modeles")
-                        .HasForeignKey("SimulationId")
+                        .HasForeignKey("SimulationID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -381,7 +383,7 @@ namespace TestS8.Data.Migrations
                 {
                     b.HasOne("TestS8.Models.Modele", "Modele")
                         .WithMany("Plots")
-                        .HasForeignKey("ModeleId")
+                        .HasForeignKey("ModeleID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -391,8 +393,8 @@ namespace TestS8.Data.Migrations
             modelBuilder.Entity("TestS8.Models.Simulation", b =>
                 {
                     b.HasOne("TestS8.Models.Utilisateur", "Utilisateur")
-                        .WithMany()
-                        .HasForeignKey("UtilisateurId")
+                        .WithMany("Simulation")
+                        .HasForeignKey("UtilisateurID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -407,6 +409,11 @@ namespace TestS8.Data.Migrations
             modelBuilder.Entity("TestS8.Models.Simulation", b =>
                 {
                     b.Navigation("Modeles");
+                });
+
+            modelBuilder.Entity("TestS8.Models.Utilisateur", b =>
+                {
+                    b.Navigation("Simulation");
                 });
 #pragma warning restore 612, 618
         }

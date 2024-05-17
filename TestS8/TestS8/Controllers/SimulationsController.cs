@@ -36,7 +36,7 @@ namespace TestS8.Controllers
 
             var simulation = await _context.Simulation
                 .Include(s => s.Utilisateur)
-                .FirstOrDefaultAsync(m => m.IdSimul == id);
+                .FirstOrDefaultAsync(m => m.SimulationID == id);
             if (simulation == null)
             {
                 return NotFound();
@@ -48,7 +48,7 @@ namespace TestS8.Controllers
         // GET: Simulations/Create
         public IActionResult Create()
         {
-            ViewData["UtilisateurId"] = new SelectList(_context.Set<Utilisateur>(), "Id", "Id");
+            ViewData["UtilisateurID"] = new SelectList(_context.Utilisateur, "UtilisateurID", "UtilisateurID");
             return View();
         }
 
@@ -57,7 +57,7 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdSimul,Date,Duree_simul,UtilisateurId")] Simulation simulation)
+        public async Task<IActionResult> Create([Bind("SimulationID,Date,UtilisateurID")] Simulation simulation)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +65,7 @@ namespace TestS8.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilisateurId"] = new SelectList(_context.Set<Utilisateur>(), "Id", "Id", simulation.UtilisateurId);
+            ViewData["UtilisateurID"] = new SelectList(_context.Utilisateur, "UtilisateurID", "UtilisateurID", simulation.UtilisateurID);
             return View(simulation);
         }
 
@@ -82,7 +82,7 @@ namespace TestS8.Controllers
             {
                 return NotFound();
             }
-            ViewData["UtilisateurId"] = new SelectList(_context.Set<Utilisateur>(), "Id", "Id", simulation.UtilisateurId);
+            ViewData["UtilisateurID"] = new SelectList(_context.Utilisateur, "UtilisateurID", "UtilisateurID", simulation.UtilisateurID);
             return View(simulation);
         }
 
@@ -91,9 +91,9 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdSimul,Date,Duree_simul,UtilisateurId")] Simulation simulation)
+        public async Task<IActionResult> Edit(int id, [Bind("SimulationID,Date,UtilisateurID")] Simulation simulation)
         {
-            if (id != simulation.IdSimul)
+            if (id != simulation.SimulationID)
             {
                 return NotFound();
             }
@@ -107,7 +107,7 @@ namespace TestS8.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SimulationExists(simulation.IdSimul))
+                    if (!SimulationExists(simulation.SimulationID))
                     {
                         return NotFound();
                     }
@@ -118,7 +118,7 @@ namespace TestS8.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilisateurId"] = new SelectList(_context.Set<Utilisateur>(), "Id", "Id", simulation.UtilisateurId);
+            ViewData["UtilisateurID"] = new SelectList(_context.Utilisateur, "UtilisateurID", "UtilisateurID", simulation.UtilisateurID);
             return View(simulation);
         }
 
@@ -132,7 +132,7 @@ namespace TestS8.Controllers
 
             var simulation = await _context.Simulation
                 .Include(s => s.Utilisateur)
-                .FirstOrDefaultAsync(m => m.IdSimul == id);
+                .FirstOrDefaultAsync(m => m.SimulationID == id);
             if (simulation == null)
             {
                 return NotFound();
@@ -162,7 +162,7 @@ namespace TestS8.Controllers
 
         private bool SimulationExists(int id)
         {
-          return (_context.Simulation?.Any(e => e.IdSimul == id)).GetValueOrDefault();
+          return (_context.Simulation?.Any(e => e.SimulationID == id)).GetValueOrDefault();
         }
     }
 }

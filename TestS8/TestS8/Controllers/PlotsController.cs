@@ -36,7 +36,7 @@ namespace TestS8.Controllers
 
             var plot = await _context.Plot
                 .Include(p => p.Modele)
-                .FirstOrDefaultAsync(m => m.IdPlot == id);
+                .FirstOrDefaultAsync(m => m.PlotID == id);
             if (plot == null)
             {
                 return NotFound();
@@ -48,7 +48,7 @@ namespace TestS8.Controllers
         // GET: Plots/Create
         public IActionResult Create()
         {
-            ViewData["ModeleId"] = new SelectList(_context.Modele, "IdModele", "IdModele");
+            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID");
             return View();
         }
 
@@ -57,7 +57,7 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdPlot,Chemin,ModeleId")] Plot plot)
+        public async Task<IActionResult> Create([Bind("PlotID,Chemin,Nom,ModeleID")] Plot plot)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +65,7 @@ namespace TestS8.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ModeleId"] = new SelectList(_context.Modele, "IdModele", "IdModele", plot.ModeleId);
+            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID", plot.ModeleID);
             return View(plot);
         }
 
@@ -82,7 +82,7 @@ namespace TestS8.Controllers
             {
                 return NotFound();
             }
-            ViewData["ModeleId"] = new SelectList(_context.Modele, "IdModele", "IdModele", plot.ModeleId);
+            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID", plot.ModeleID);
             return View(plot);
         }
 
@@ -91,9 +91,9 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPlot,Chemin,ModeleId")] Plot plot)
+        public async Task<IActionResult> Edit(int id, [Bind("PlotID,Chemin,Nom,ModeleID")] Plot plot)
         {
-            if (id != plot.IdPlot)
+            if (id != plot.PlotID)
             {
                 return NotFound();
             }
@@ -107,7 +107,7 @@ namespace TestS8.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PlotExists(plot.IdPlot))
+                    if (!PlotExists(plot.PlotID))
                     {
                         return NotFound();
                     }
@@ -118,7 +118,7 @@ namespace TestS8.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ModeleId"] = new SelectList(_context.Modele, "IdModele", "IdModele", plot.ModeleId);
+            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID", plot.ModeleID);
             return View(plot);
         }
 
@@ -132,7 +132,7 @@ namespace TestS8.Controllers
 
             var plot = await _context.Plot
                 .Include(p => p.Modele)
-                .FirstOrDefaultAsync(m => m.IdPlot == id);
+                .FirstOrDefaultAsync(m => m.PlotID == id);
             if (plot == null)
             {
                 return NotFound();
@@ -162,7 +162,7 @@ namespace TestS8.Controllers
 
         private bool PlotExists(int id)
         {
-          return (_context.Plot?.Any(e => e.IdPlot == id)).GetValueOrDefault();
+          return (_context.Plot?.Any(e => e.PlotID == id)).GetValueOrDefault();
         }
     }
 }

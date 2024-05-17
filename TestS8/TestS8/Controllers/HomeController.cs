@@ -2,9 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NuGet.Packaging.Signing;
+using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Claims;
+using TestS8.Data;
 using TestS8.Models;
 
 namespace TestS8.Controllers
@@ -12,13 +17,13 @@ namespace TestS8.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
-
-
         public IActionResult Index()
         {
             if (User.IsInRole("Lambda"))
@@ -42,7 +47,7 @@ namespace TestS8.Controllers
         public async Task<IActionResult> Upload(IFormFile file)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
         {
             // Chemin de destination pour enregistrer le fichier dans le sous-répertoire spécifié
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(),"Python", "data.zip");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Python", "data.zip");
 
             // Enregistrement du fichier sur le serveur
             using (var stream = new FileStream(filePath, FileMode.Create)) // Créer un flux de fichier pour enregistrer le fichier
@@ -59,6 +64,57 @@ namespace TestS8.Controllers
 
         public async Task<IActionResult> Valider(Methods model)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
         {
+            float ExtractNumber(string result)
+            {
+                if (!string.IsNullOrEmpty(result))
+                {
+
+                    dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
+                    if (jsonResult != null && jsonResult.accuracy != null)
+                    {
+                        //  accuracy
+                        return (float)jsonResult.accuracy;
+                    }
+                }
+                return 0;
+            }
+            float ExtractTime(string result)
+            {
+                if (!string.IsNullOrEmpty(result))
+                {
+
+                    dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
+                    if (jsonResult != null && jsonResult.time != null)
+                    {
+                        //  accuracy
+                        return (float)jsonResult.time;
+                    }
+                }
+                return 0;
+            }
+            if (!(_context.Utilisateur.Any()))
+            {
+                _context.Utilisateur.Add(
+                    new Utilisateur
+                    {
+                        UtilisateurID = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                    }
+                );
+            }
+
+            // Gestion de l'historique
+            // Table simulation
+            Simulation simulation = new Simulation
+            {
+                Date = DateTime.Now, // Date courante
+                UtilisateurID = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            };
+            _context.Simulation.Add(simulation);
+            await _context.SaveChangesAsync();
+            var all_simulation = await _context.Simulation.ToListAsync();
+            int lenght = all_simulation.Count();
+            int simulationId = all_simulation[lenght - 1].SimulationID;
+            //FormatException: Input string was not in a correct format
             if (ModelState.IsValid)
             {
                 if (model.Analytique)
@@ -69,13 +125,28 @@ namespace TestS8.Controllers
                     {
                         var response = await client.PostAsync("http://localhost:5000/analytical", null);
                         var result = await response.Content.ReadAsStringAsync();
-                        //var result = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(jsonString);
-                        //decimal analytique = result["accuracy"];
-                        //var analytique = JsonConvert.DeserializeObject<decimal>(result);
-
-
                         ViewBag.Analytique = result;
                     }
+                    // Modèles
+                    var modele = new Modele
+                    {
+                        Nom = "Analytique",
+                        Accuracy = ExtractNumber(ViewBag.Analytique),
+                        Accuracy_cross = 1,
+                        Hyperparametre = " ",
+                        Duree_simul = ExtractTime(ViewBag.Analytique),
+                        SimulationID = simulationId
+                    };
+                    _context.Modele.Add(modele);
+                    await _context.SaveChangesAsync();
+                    int modeleId = modele.ModeleID;
+                    /* Plot
+                    var plot = new Plot
+                    {
+                        Chemin = "",
+                        ModeleID = modeleId
+                    };
+                    _context.Add(plot);*/
                 }
                 if (model.KNN)
                 {
@@ -89,12 +160,35 @@ namespace TestS8.Controllers
                             Parameter3 = model.algorithm,
                             Parameter4 = model.p_knn
                         };
-
                         var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
                         var response = await client.PostAsync("http://localhost:5000/knn", content);
                         var result = await response.Content.ReadAsStringAsync();
                         ViewBag.KNN = result;
+                        // Modèles
+                        var modele = new Modele
+                        {
+                            Nom = "KNN",
+                            Accuracy = ExtractNumber(ViewBag.KNN),
+                            Accuracy_cross = 1,
+                            Hyperparametre = @"{n_neighbors:" + requestData.Parameter1.ToString() + "," +
+                                                "weights:" + requestData.Parameter2.ToString() + "," +
+                                                "algorithm:" + requestData.Parameter3.ToString() + "," +
+                                                "p_knn:" + requestData.Parameter4.ToString() + "," + "}",
+                            Duree_simul = ExtractTime(ViewBag.KNN),
+                            SimulationID = simulationId
+                        };
+                        _context.Modele.Add(modele);
+                        await _context.SaveChangesAsync();
+                        int modeleId = modele.ModeleID;
+                        /* Plot
+                        var plot = new Plot
+                        {
+                            Chemin = "",
+                            ModeleID = modeleId
+                        };
+                        _context.Add(plot);*/
                     }
+
                 }
                 if (model.RandomForest)
                 {
@@ -109,13 +203,36 @@ namespace TestS8.Controllers
                             Parameter4 = model.min_samples_leaf,
                             Parameter5 = model.bootstrap
                         };
-
                         var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
                         var response = await client.PostAsync("http://localhost:5000/randomforest", content);
                         var result = await response.Content.ReadAsStringAsync();
                         ViewBag.Randomforest = result;
+
+                        // Modèles
+                        var modele = new Modele
+                        {
+                            Nom = "Random Forest",
+                            Accuracy = ExtractNumber(ViewBag.Randomforest),
+                            Accuracy_cross = 1,
+                            Hyperparametre = @"{n_estimators:" + requestData.Parameter1.ToString() + "," +
+                                                "max_depth:" + requestData.Parameter2.ToString() + "," +
+                                                "min_samples_split:" + requestData.Parameter3.ToString() + "," +
+                                                "min_samples_leaf:" + requestData.Parameter4.ToString() + "," +
+                                                "bootstrap:" + requestData.Parameter5.ToString() + "}",
+                            Duree_simul = ExtractTime(ViewBag.KNN),
+                            SimulationID = simulationId
+                        };
+                        _context.Modele.Add(modele);
+                        await _context.SaveChangesAsync();
+                        int modeleId = modele.ModeleID;
+                        /* Plot
+                        var plot = new Plot
+                        {
+                            Chemin = "",
+                            ModeleID = modeleId
+                        };
+                        _context.Add(plot);*/
                     }
-                    
                 }
                 if (model.SVM)
                 {
@@ -129,14 +246,38 @@ namespace TestS8.Controllers
                             Parameter3 = model.probability,
                             Parameter4 = model.tol
                         };
-
                         var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
                         var response = await client.PostAsync("http://localhost:5000/svm", content);
                         var result = await response.Content.ReadAsStringAsync();
                         ViewBag.SVM = result;
+                        // Modèles
+                        var modele = new Modele
+                        {
+                            Nom = "SVM",
+                            Accuracy = ExtractNumber(ViewBag.SVM),
+                            Accuracy_cross = 1,
+                            Hyperparametre = @"{kernel:" + requestData.Parameter1.ToString() + "," +
+                                                "C:" + requestData.Parameter2.ToString() + "," +
+                                                "probability:" + requestData.Parameter3.ToString() + "," +
+                                                "tol:" + requestData.Parameter4.ToString() + "," + "}",
+                               
+                            Duree_simul = ExtractTime(ViewBag.SVM),
+                            SimulationID = simulationId
+                        };
+                        _context.Modele.Add(modele);
+                        await _context.SaveChangesAsync();
+                        int modeleId = modele.ModeleID;
+                        /* Plot
+                        var plot = new Plot
+                        {
+                            Chemin = "",
+                            ModeleID = modeleId
+                        };
+                        _context.Add(plot);*/
                     }
                 }
             }
+            await _context.SaveChangesAsync();
 
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Python", "data.zip");
             var filePath2 = Path.Combine(Directory.GetCurrentDirectory(), "Python", "data_anonymous");
@@ -160,63 +301,95 @@ namespace TestS8.Controllers
             return View("Index");
         }
 
-
-        public async Task<IActionResult> RandomForest(int Param1, int Param2, int Param3, int Param4, string Param5)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
+        public async Task<IActionResult> ValiderGuest(Methods model)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
         {
-            // Préparation de la requête http à envoyer au service python (flask_api_test.py)
-            using (var client = new HttpClient())
+            if (ModelState.IsValid)
             {
-                var requestData = new
+                if (model.Analytique)
                 {
-                    Parameter1 = Param1,
-                    Parameter2 = Param2,
-                    Parameter3 = Param3,
-                    Parameter4 = Param4,
-                    Parameter5 = Param5
-                };
-
-                var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
-                var response = await client.PostAsync("http://localhost:5000/randomForest", content);
-                var result = await response.Content.ReadAsStringAsync();
-                ViewBag.Result = result;
+                    // Récupérer le lien du fichier uploadé et l'envoyer dans la requpete http au serveur python
+                    // Préparation de la requête http à envoyer au service python (flask_api_test.py)
+                    using (var client = new HttpClient())
+                    {
+                        var response = await client.PostAsync("http://localhost:5000/analyticalguest", null);
+                        var result = await response.Content.ReadAsStringAsync();
+                        ViewBag.Analytique = result;
+                    }
+                }
+                if (model.KNN)
+                {
+                    // Préparation de la requête http à envoyer au service python (flask_api_test.py)
+                    using (var client = new HttpClient())
+                    {
+                        var requestData = new
+                        {
+                            Parameter1 = model.n_neighbors,
+                            Parameter2 = model.weights,
+                            Parameter3 = model.algorithm,
+                            Parameter4 = model.p_knn
+                        };
+                        var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
+                        var response = await client.PostAsync("http://localhost:5000/knnguest", content);
+                        var result = await response.Content.ReadAsStringAsync();
+                        ViewBag.KNN = result;
+                    }
+                    if (model.RandomForest)
+                    {
+                        // Préparation de la requête http à envoyer au service python (flask_api_test.py)
+                        using (var client = new HttpClient())
+                        {
+                            var requestData = new
+                            {
+                                Parameter1 = model.n_estimators,
+                                Parameter2 = model.max_depth,
+                                Parameter3 = model.min_samples_split,
+                                Parameter4 = model.min_samples_leaf,
+                                Parameter5 = model.bootstrap
+                            };
+                            var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
+                            var response = await client.PostAsync("http://localhost:5000/randomforestguest", content);
+                            var result = await response.Content.ReadAsStringAsync();
+                            ViewBag.Randomforest = result;
+                        }
+                    }
+                    if (model.SVM)
+                    {
+                        // Préparation de la requête http à envoyer au service python (flask_api_test.py)
+                        using (var client = new HttpClient())
+                        {
+                            var requestData = new
+                            {
+                                Parameter1 = model.kernel,
+                                Parameter2 = model.C,
+                                Parameter3 = model.probability,
+                                Parameter4 = model.tol
+                            };
+                            var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
+                            var response = await client.PostAsync("http://localhost:5000/svmguest", content);
+                            var result = await response.Content.ReadAsStringAsync();
+                            ViewBag.SVM = result;
+                        }
+                    }
+                }
             }
-            return View("Index");
+            return View("Guest");
         }
 
-        public async Task<IActionResult> KNN(int Param1, string Param2, string Param3, int Param4)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
-        {
-            // Préparation de la requête http à envoyer au service python (flask_api_test.py)
-            using (var client = new HttpClient())
-            {
-                var requestData = new
-                {
-                    Parameter1 = Param1,
-                    Parameter2 = Param2,
-                    Parameter3 = Param3,
-                    Parameter4 = Param4
-                };
 
-                var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
-                var response = await client.PostAsync("http://localhost:5000/knn", content);
-                var result = await response.Content.ReadAsStringAsync();
-                ViewBag.Result = result;
-            }
-            return View("Index");
-        }
 
-        [Authorize(Roles = "Admin")]
+            [Authorize(Roles = "Admin")]
         public IActionResult IndexAdmin()
         {
             return View("Index");
         }
-        
+
         [Authorize(Roles = "Lambda")]
         public IActionResult Guest()
         {
             return View();
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Privacy()
         {
             return View();
