@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TestS8.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialCre : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,11 +13,31 @@ namespace TestS8.Data.Migrations
                 name: "Utilisateur",
                 columns: table => new
                 {
-                    UtilisateurID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UtilisateurID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Mail = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Utilisateur", x => x.UtilisateurID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Connexion",
+                columns: table => new
+                {
+                    ConnexionID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateConnexion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UtilisateurID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Connexion", x => x.ConnexionID);
+                    table.ForeignKey(
+                        name: "FK_Connexion_Utilisateur_UtilisateurID",
+                        column: x => x.UtilisateurID,
+                        principalTable: "Utilisateur",
+                        principalColumn: "UtilisateurID");
                 });
 
             migrationBuilder.CreateTable(
@@ -27,17 +47,16 @@ namespace TestS8.Data.Migrations
                     SimulationID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Duree_simul = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UtilisateurID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ConnexionID = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Simulation", x => x.SimulationID);
                     table.ForeignKey(
-                        name: "FK_Simulation_Utilisateur_UtilisateurID",
-                        column: x => x.UtilisateurID,
-                        principalTable: "Utilisateur",
-                        principalColumn: "UtilisateurID",
+                        name: "FK_Simulation_Connexion_ConnexionID",
+                        column: x => x.ConnexionID,
+                        principalTable: "Connexion",
+                        principalColumn: "ConnexionID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -47,10 +66,11 @@ namespace TestS8.Data.Migrations
                 {
                     ModeleID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Accuracy = table.Column<int>(type: "int", nullable: false),
-                    Hyperparametre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Accuracy_cross = table.Column<int>(type: "int", nullable: false),
+                    Accuracy = table.Column<float>(type: "real", nullable: false),
+                    Accuracy_cross = table.Column<float>(type: "real", nullable: false),
+                    Hyperparametre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Duree_simul = table.Column<float>(type: "real", nullable: false),
                     SimulationID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -65,20 +85,20 @@ namespace TestS8.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Plot",
+                name: "Parametres",
                 columns: table => new
                 {
-                    PlotID = table.Column<int>(type: "int", nullable: false)
+                    ParametresID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Chemin = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Valeur = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ModeleID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Plot", x => x.PlotID);
+                    table.PrimaryKey("PK_Parametres", x => x.ParametresID);
                     table.ForeignKey(
-                        name: "FK_Plot_Modele_ModeleID",
+                        name: "FK_Parametres_Modele_ModeleID",
                         column: x => x.ModeleID,
                         principalTable: "Modele",
                         principalColumn: "ModeleID",
@@ -86,31 +106,39 @@ namespace TestS8.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Connexion_UtilisateurID",
+                table: "Connexion",
+                column: "UtilisateurID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Modele_SimulationID",
                 table: "Modele",
                 column: "SimulationID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Plot_ModeleID",
-                table: "Plot",
+                name: "IX_Parametres_ModeleID",
+                table: "Parametres",
                 column: "ModeleID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Simulation_UtilisateurID",
+                name: "IX_Simulation_ConnexionID",
                 table: "Simulation",
-                column: "UtilisateurID");
+                column: "ConnexionID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Plot");
+                name: "Parametres");
 
             migrationBuilder.DropTable(
                 name: "Modele");
 
             migrationBuilder.DropTable(
                 name: "Simulation");
+
+            migrationBuilder.DropTable(
+                name: "Connexion");
 
             migrationBuilder.DropTable(
                 name: "Utilisateur");

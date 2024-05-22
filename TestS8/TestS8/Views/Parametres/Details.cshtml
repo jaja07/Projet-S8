@@ -1,0 +1,36 @@
+﻿@model TestS8.Models.Parametres
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Parametres</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nom)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nom)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Valeur)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Valeur)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Modeles)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Modeles.ModeleID)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.ParametresID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

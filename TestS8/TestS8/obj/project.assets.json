@@ -11499,19 +11499,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jarfi\\.nuget\\packages\\": {}
+    "C:\\Users\\HP\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
+      "projectUniqueName": "D:\\C#\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
       "projectName": "TestS8",
-      "projectPath": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
-      "packagesPath": "C:\\Users\\jarfi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\obj\\",
+      "projectPath": "D:\\C#\\Projet-S8\\TestS8\\TestS8\\TestS8.csproj",
+      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+      "outputPath": "D:\\C#\\Projet-S8\\TestS8\\TestS8\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\jarfi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -11519,6 +11524,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

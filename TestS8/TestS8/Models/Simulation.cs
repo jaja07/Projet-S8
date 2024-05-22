@@ -7,8 +7,10 @@ namespace TestS8.Models
         [Key]
         public int SimulationID { get; set; }
         public DateTime Date { get; set; }
-        public string UtilisateurID { get; set; }
-        public Utilisateur Utilisateur { get; set; } // Association avec Utilisateur
+        public string ConnexionID { get; set; }
+
+        //Propriétés de navigation
+        public Connexion Connexion { get; set; } 
         public ICollection<Modele> Modeles { get; set; }
     }
 }

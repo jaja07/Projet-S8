@@ -56,7 +56,7 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UtilisateurID")] Utilisateur utilisateur)
+        public async Task<IActionResult> Create([Bind("UtilisateurID,Mail")] Utilisateur utilisateur)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +88,7 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("UtilisateurID")] Utilisateur utilisateur)
+        public async Task<IActionResult> Edit(string id, [Bind("UtilisateurID,Mail")] Utilisateur utilisateur)
         {
             if (id != utilisateur.UtilisateurID)
             {

@@ -224,6 +224,28 @@ namespace TestS8.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TestS8.Models.Connexion", b =>
+                {
+                    b.Property<string>("ConnexionID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateConnexion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UtilisateurID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ConnexionID");
+
+                    b.HasIndex("UtilisateurID");
+
+                    b.ToTable("Connexion");
+                });
+
             modelBuilder.Entity("TestS8.Models.Modele", b =>
                 {
                     b.Property<int>("ModeleID")
@@ -259,30 +281,28 @@ namespace TestS8.Data.Migrations
                     b.ToTable("Modele");
                 });
 
-            modelBuilder.Entity("TestS8.Models.Plot", b =>
+            modelBuilder.Entity("TestS8.Models.Parametres", b =>
                 {
-                    b.Property<int>("PlotID")
+                    b.Property<int>("ParametresID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlotID"), 1L, 1);
-
-                    b.Property<string>("Chemin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ParametresID"), 1L, 1);
 
                     b.Property<int>("ModeleID")
                         .HasColumnType("int");
 
                     b.Property<string>("Nom")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PlotID");
+                    b.Property<string>("Valeur")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ParametresID");
 
                     b.HasIndex("ModeleID");
 
-                    b.ToTable("Plot");
+                    b.ToTable("Parametres");
                 });
 
             modelBuilder.Entity("TestS8.Models.Simulation", b =>
@@ -293,16 +313,16 @@ namespace TestS8.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SimulationID"), 1L, 1);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UtilisateurID")
+                    b.Property<string>("ConnexionID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("SimulationID");
 
-                    b.HasIndex("UtilisateurID");
+                    b.HasIndex("ConnexionID");
 
                     b.ToTable("Simulation");
                 });
@@ -311,6 +331,9 @@ namespace TestS8.Data.Migrations
                 {
                     b.Property<string>("UtilisateurID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Mail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UtilisateurID");
 
@@ -368,6 +391,15 @@ namespace TestS8.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TestS8.Models.Connexion", b =>
+                {
+                    b.HasOne("TestS8.Models.Utilisateur", "Utilisateur")
+                        .WithMany("Connexions")
+                        .HasForeignKey("UtilisateurID");
+
+                    b.Navigation("Utilisateur");
+                });
+
             modelBuilder.Entity("TestS8.Models.Modele", b =>
                 {
                     b.HasOne("TestS8.Models.Simulation", "Simulation")
@@ -379,31 +411,36 @@ namespace TestS8.Data.Migrations
                     b.Navigation("Simulation");
                 });
 
-            modelBuilder.Entity("TestS8.Models.Plot", b =>
+            modelBuilder.Entity("TestS8.Models.Parametres", b =>
                 {
-                    b.HasOne("TestS8.Models.Modele", "Modele")
-                        .WithMany("Plots")
+                    b.HasOne("TestS8.Models.Modele", "Modeles")
+                        .WithMany("Parametres")
                         .HasForeignKey("ModeleID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Modele");
+                    b.Navigation("Modeles");
                 });
 
             modelBuilder.Entity("TestS8.Models.Simulation", b =>
                 {
-                    b.HasOne("TestS8.Models.Utilisateur", "Utilisateur")
-                        .WithMany("Simulation")
-                        .HasForeignKey("UtilisateurID")
+                    b.HasOne("TestS8.Models.Connexion", "Connexion")
+                        .WithMany("Simulations")
+                        .HasForeignKey("ConnexionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Utilisateur");
+                    b.Navigation("Connexion");
+                });
+
+            modelBuilder.Entity("TestS8.Models.Connexion", b =>
+                {
+                    b.Navigation("Simulations");
                 });
 
             modelBuilder.Entity("TestS8.Models.Modele", b =>
                 {
-                    b.Navigation("Plots");
+                    b.Navigation("Parametres");
                 });
 
             modelBuilder.Entity("TestS8.Models.Simulation", b =>
@@ -413,7 +450,7 @@ namespace TestS8.Data.Migrations
 
             modelBuilder.Entity("TestS8.Models.Utilisateur", b =>
                 {
-                    b.Navigation("Simulation");
+                    b.Navigation("Connexions");
                 });
 #pragma warning restore 612, 618
         }

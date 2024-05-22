@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using TestS8.Models;
+using TestS8.Data;
 
 namespace TestS8.Areas.Identity.Pages.Account
 {
@@ -21,11 +24,16 @@ namespace TestS8.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context,
+                      UserManager<IdentityUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -109,11 +117,26 @@ namespace TestS8.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    // Récupérer l'utilisateur connecté
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                    if (user != null)
+                    {
+                        // Enregistrer les informations de connexion
+                        var connexion = new Connexion
+                        {
+                            ConnexionID = user.Id,
+                            Email = user.Email,
+                            DateConnexion = DateTime.Now
+                        };
+
+                        _context.Connexion.Add(connexion);
+                        await _context.SaveChangesAsync();
+                    }
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

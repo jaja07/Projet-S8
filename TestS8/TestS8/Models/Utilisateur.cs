@@ -2,7 +2,8 @@
 {
     public class Utilisateur 
     {
-        public string UtilisateurID { get; set; }
-        public ICollection<Simulation> Simulation { get; set; } 
+        public string? UtilisateurID { get; set; }
+        public string? Mail {  get; set; }
+        public ICollection<Connexion> Connexions { get; set; } 
     }
 }

@@ -1,0 +1,376 @@
+﻿@{
+    ViewData["Title"] = "Accueil";
+}
+@model TestS8.Models.Methods
+@{
+    float ExtractNumber(string result)
+    {
+        if (!string.IsNullOrEmpty(result))
+        {
+
+            dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
+            if (jsonResult != null && jsonResult.accuracy != null)
+            {
+                //  accuracy
+                return (float)jsonResult.accuracy;
+            }
+        }
+        return 0;
+    }
+    string analytique = ExtractNumber(ViewBag.Analytique).ToString().Replace(",", ".");
+    string knn = ExtractNumber(ViewBag.KNN).ToString().Replace(",", ".");
+    string svm = ExtractNumber(ViewBag.SVM).ToString().Replace(",", ".");
+    string randomforest = ExtractNumber(ViewBag.Randomforest).ToString().Replace(",", "."); ;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://cdn.pixabay.com/photo/2024/01/29/22/47/ai-generated-8540915_1280.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 20px; /* Espacement autour du contenu */
+            color: #FFFFFF; /* Couleur du texte blanc */
+        }
+
+        .welcome-title {
+            font-size: 2.5em; /* Taille du titre */
+            text-align: center; /* Centrage horizontal */
+            margin-bottom: 30px; /* Espacement en dessous */
+            text-transform: uppercase; /* Conversion en majuscules */
+            letter-spacing: 2px; /* Espacement entre les lettres */
+        }
+
+        .Menu {
+            list-style-type: none; /* Supprime les puces de la liste */
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-around; /* Centrage horizontal des éléments */
+        }
+
+            .Menu li {
+                position: relative; /* Position relative pour positionner le sous-menu */
+                width: calc(25% - 20px); /* Largeur des cartes */
+                background-color: rgba(255, 255, 255, 0.1); /* Fond transparent */
+                border-radius: 20px; /* Coins arrondis */
+                padding: 20px; /* Espacement à l'intérieur des cartes */
+                margin: 0 10px; /* Espacement entre les cartes */
+                text-align: center;
+                transition: background-color 0.3s ease; /* Transition fluide */
+            }
+
+                .Menu li:hover {
+                    background-color: rgba(255, 255, 255, 0.3); /* Fond transparent légèrement plus clair au survol */
+                }
+
+                .Menu li label {
+                    cursor: pointer; /* Curseur pointer */
+                }
+
+        /* Styles pour le formulaire */
+        .form-container {
+            display: none; /* Par défaut, le formulaire est caché */
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+            .form-container input[type="number"] {
+                width: 100px; /* Largeur des champs de nombre */
+            }
+
+            .form-container select {
+                width: 100px; /* Largeur des listes déroulantes */
+            }
+
+        .conteneur-bouton {
+            text-align: center; /* Centrage horizontal du bouton */
+        }
+
+        .bouton-envoyer {
+            background-color: #4CAF50; /* Couleur de fond verte */
+            color: white; /* Couleur du texte blanc */
+            padding: 10px 20px; /* Espacement autour du texte */
+            border: none; /* Pas de bordure */
+            border-radius: 5px; /* Coins arrondis */
+            cursor: pointer; /* Curseur pointer */
+            transition: background-color 0.3s ease; /* Transition fluide */
+        }
+
+            .bouton-envoyer:hover {
+                background-color: #45a049; /* Couleur de fond plus foncée au survol */
+            }
+
+        .import-section {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Titre -->
+    <h1 class="welcome-title">Bienvenue</h1>
+
+    <!-- Importer les fichiers de simulation -->
+    <div id="import" class="import-section">
+        <form method="post" asp-action="Upload" enctype="multipart/form-data">
+            <label for="file">Importer un fichier :</label>
+            <input type="file" id="file" name="file">
+            <button type="submit" class="bouton-envoyer">Envoyer</button>
+        </form>
+    </div>
+
+    <!-- Menu des méthodes analytiques et de machine learning -->
+    <form method="post" asp-action="Valider">
+        <ul>
+            <li>
+                <input type="checkbox" asp-for="Analytique" onclick="showForm('Analytique')">
+                <label asp-for="Analytique">Méthode Analytique</label>
+            </li>
+
+            <!--KNN-->
+            <li>
+                <input type="checkbox" asp-for="KNN" onclick="showForm('KNN')">
+                <label asp-for="KNN">Méthode KNN</label>
+                <div id="form-container-KNN" class="form-container">
+                    <!-- Formulaire pour KNN -->
+                    <div>
+                        <label asp-for="n_neighbors">n_neighbors</label>
+                        <input type="number" asp-for="n_neighbors" value="5">
+                        <p>
+                            Détail : Il s'agit du nombre de voisins à utiliser par défaut pour les requêtes.
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="weights">weight</label>
+                        <select asp-for="weights">
+                            <option value="uniform">uniform</option>
+                            <option value="distance">distance</option>
+                        </select>
+                        <p>
+                            Détail : Il s'agit de la fonction de poids utilisée dans la prédiction
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="algorithm">Algorithm</label>
+                        <select asp-for="algorithm">
+                            <option value="auto">auto</option>
+                            <option value="euclidean">euclidean</option>
+                            <option value="manhattan">manhattan</option>
+                        </select>
+                        <p>
+                            Détail : Il s'agit de la métrique à utiliser pour le calcul de la distance
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="p_knn">p_knn</label>
+                        <input type="number" asp-for="p_knn" value="5" data-default="5">
+                        <p>
+                            Détail : Il s'agit du nombre de voisins à utiliser par défaut pour les requêtes.
+                        </p>
+                    </div>
+
+                </div>
+            </li>
+
+            <!--Random Forest-->
+            <li>
+                <input type="checkbox" asp-for="RandomForest" onclick="showForm('RandomForest')">
+                <label asp-for="RandomForest">Méthode RandomForest</label>
+                <div id="form-container-RandomForest" class="form-container">
+                    <!-- Formulaire pour RandomForest -->
+                    <div>
+                        <label for="n_estimator">n_estimators</label>
+                        <input type="number" asp-for="n_estimators" value="100" data-default="100" min=" 100">
+                        <p>
+                            Détail : Il s'agit du nombre d'arbres dans la forêt.
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="max_depth">max_depth</label>
+                        <input type="number" asp-for="max_depth" value="10" data-default="10" min="0">
+                        <p>
+                            Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="min_samples_split">min_samples_split</label>
+                        <input type="number" asp-for="min_samples_split" value="2" data-default="2" min="0">
+                        <p>
+                            Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="min_samples_leaf">min_samples_leaf</label>
+                        <input type="number" asp-for="min_samples_leaf" value="0" data-default="0" min="0">
+                        <p>
+                            Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="bootstrap">Bootstrap</label>
+                        <input type="text" asp-for="bootstrap">
+                        <p>
+                            Détail : Profondeur maximale de l’arbre. Si None, les noeuds sont développés jusqu’à ce que toutes les feuilles sont pures ou jusqu’à ce que toutes les feuilles contiennent moins de min_samples_split échantillons.
+                        </p>
+                    </div>
+                </div>
+            </li>
+
+            <!--SVM-->
+            <li>
+                <input type="checkbox" asp-for="SVM" onclick="showForm('SVM')">
+                <label asp-for="SVM">Méthode SVM</label>
+                <div id="form-container-SVM" class="form-container">
+                    <!-- Formulaire pour SVM -->
+                    <div>
+                        <label asp-for="C">C</label>
+                        <input type="number" asp-for=C value="1" data-default="1" step="0.1" min="1">
+                        <p>
+                            Détail : Il s'agit du paramètre de régularisation
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="kernel">Kernel</label>
+                        <select asp-for="kernel">
+                            <option value="rbf">rbf</option>
+                            <option value="linear">linear</option>
+                            <option value="poly">poly</option>
+                            <option value="sigmoid">sigmoid</option>
+                        </select>
+                        <p>
+                            Détail : Il spécifie le type de noyau à utiliser dans l’algorithme
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="probability">Probability</label>
+                        <select asp-for="probability">
+                            <option value="True">True</option>
+                            <option value="False">False</option>
+                        </select>
+                        <p>
+                            Détail : Activation ou non des estimations de probabilité. Cela doit être activé avant d'appeler fit, ce qui ralentira cette méthode car elle utilise en interne la validation croisée 5 fois, et predict_proba peut être incohérent avec predict
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="tol">tol</label>
+                        <input type="number" asp-for=tol value="1e-3">
+                        <p>
+                            Détail : Tolérance pour le critère d'arrêt.
+                        </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div class="conteneur-bouton">
+            <button type="submit" class="bouton-envoyer">Valider</button>
+        </div>
+    </form>
+
+
+    <div class="col-md-8">
+        <div class="result">
+            <h4>Result:</h4>
+            @if (ViewBag.Analytique != null)
+            {
+                <pre>@Html.Raw(ViewBag.Analytique)</pre>
+            }
+            @if (ViewBag.Randomforest != null)
+            {
+                <pre>@Html.Raw(ViewBag.Randomforest)</pre>
+            }
+            @if (ViewBag.KNN != null)
+            {
+                <pre>@Html.Raw(ViewBag.KNN)</pre>
+            }
+            @if (ViewBag.SVM != null)
+            {
+                <pre>@Html.Raw(ViewBag.SVM)</pre>
+            }
+        </div>
+    </div>
+
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        function updateChart(selectedOptions) {
+            const ctx = document.getElementById('myChart');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Analytique', 'Random Forest', 'SVM', 'KNN'],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: selectedOptions,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        //updateChart([0.97, @randomforest, @svm, 0.3 ]);
+
+        updateChart([@analytique, @randomforest, @svm, @knn]);
+    </script>
+
+    <!-- Script JavaScript -->
+    <script>
+        function showForm(methodName) {
+            var formContainer = document.getElementById('form-container-' + methodName);
+            if (formContainer.style.display === 'block') {
+                formContainer.style.display = 'none';
+            } else {
+                formContainer.style.display = 'block';
+            }
+
+            // Assure que le formulaire est affiché en bas de la carte
+            window.scrollTo({
+                top: formContainer.offsetTop,
+                behavior: 'smooth'
+            });
+
+        }
+        function showForm(methodName) {
+            var formContainer = document.getElementById('form-container-' + methodName);
+            var importSection = document.getElementById('import-section-' + methodName);
+
+            if (formContainer.style.display === 'block') {
+                formContainer.style.display = 'none';
+                importSection.style.display = 'none';
+            } else {
+                formContainer.style.display = 'block';
+                importSection.style.display = 'block';
+            }
+
+            // Assure que le formulaire est affiché en bas de la carte
+            window.scrollTo({
+                top: formContainer.offsetTop,
+                behavior: 'smooth'
+            });
+        }
+
+    </script>
+</body>
+</html>

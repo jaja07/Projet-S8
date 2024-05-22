@@ -1,0 +1,23 @@
+﻿@model IEnumerable<TestS8.Models.Connexion>
+
+<h1>Historique des connexions</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Date de connexion</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var connexion in Model)
+        {
+            <tr>
+                <th>@connexion.ConnexionID</th>
+                <td>@connexion.Email</td>
+                <td>@connexion.DateConnexion</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -16,7 +16,7 @@ namespace TestS8.Models
         
         public int SimulationID { get; set; }
         public Simulation Simulation { get; set; } // Association avec Simulation
-        public ICollection<Plot> Plots { get; set; }
+        public ICollection<Parametres> Parametres { get; set; }
 
 
     }

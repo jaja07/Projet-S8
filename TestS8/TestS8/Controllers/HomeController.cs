@@ -34,6 +34,10 @@ namespace TestS8.Controllers
             {
                 return RedirectToAction("IndexAdmin", "Home");
             }
+            else if (User.IsInRole("Expert"))
+            {
+                return RedirectToAction("Admin", "Home");
+            }
             else
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
 
@@ -107,7 +111,7 @@ namespace TestS8.Controllers
             Simulation simulation = new Simulation
             {
                 Date = DateTime.Now, // Date courante
-                UtilisateurID = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ConnexionID = User.FindFirstValue(ClaimTypes.NameIdentifier)
             };
             _context.Simulation.Add(simulation);
             await _context.SaveChangesAsync();
@@ -260,7 +264,7 @@ namespace TestS8.Controllers
                                                 "C:" + requestData.Parameter2.ToString() + "," +
                                                 "probability:" + requestData.Parameter3.ToString() + "," +
                                                 "tol:" + requestData.Parameter4.ToString() + "," + "}",
-                               
+
                             Duree_simul = ExtractTime(ViewBag.SVM),
                             SimulationID = simulationId
                         };
@@ -377,7 +381,7 @@ namespace TestS8.Controllers
 
 
 
-            [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult IndexAdmin()
         {
             return View("Index");
@@ -388,11 +392,21 @@ namespace TestS8.Controllers
         {
             return View();
         }
+        [Authorize(Roles = "Expert")]
+        public IActionResult Admin()
+        {
+            return View();
+        }
 
         [Authorize(Roles = "Admin")]
         public IActionResult Privacy()
         {
             return View();
+        }
+        public async Task<IActionResult> Login()
+        {
+            var histories = await _context.Connexion.ToListAsync();
+            return View("View/Connexion/Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

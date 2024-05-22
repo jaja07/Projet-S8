@@ -7,7 +7,7 @@
 <h1>Index</h1>
 
 <p>
-    
+    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -16,7 +16,7 @@
                 @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Utilisateur)
+                @Html.DisplayNameFor(model => model.Connexion)
             </th>
             <th></th>
         </tr>
@@ -28,10 +28,10 @@
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Utilisateur.UtilisateurID)
+                @Html.DisplayFor(modelItem => item.Connexion.ConnexionID)
             </td>
             <td>
-                <a asp-controller="Modeles" asp-action="IndexSimul" asp-route-id="@item.SimulationID">Afficher</a> |
+                <a asp-action="Edit" asp-route-id="@item.SimulationID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.SimulationID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.SimulationID">Delete</a>
             </td>

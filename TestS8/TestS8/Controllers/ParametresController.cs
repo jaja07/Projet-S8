@@ -10,90 +10,90 @@ using TestS8.Models;
 
 namespace TestS8.Controllers
 {
-    public class PlotsController : Controller
+    public class ParametresController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PlotsController(ApplicationDbContext context)
+        public ParametresController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Plots
+        // GET: Parametres
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Plot.Include(p => p.Modele);
+            var applicationDbContext = _context.Parametres.Include(p => p.Modeles);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Plots/Details/5
+        // GET: Parametres/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Plot == null)
+            if (id == null || _context.Parametres == null)
             {
                 return NotFound();
             }
 
-            var plot = await _context.Plot
-                .Include(p => p.Modele)
-                .FirstOrDefaultAsync(m => m.PlotID == id);
-            if (plot == null)
+            var parametres = await _context.Parametres
+                .Include(p => p.Modeles)
+                .FirstOrDefaultAsync(m => m.ParametresID == id);
+            if (parametres == null)
             {
                 return NotFound();
             }
 
-            return View(plot);
+            return View(parametres);
         }
 
-        // GET: Plots/Create
+        // GET: Parametres/Create
         public IActionResult Create()
         {
             ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID");
             return View();
         }
 
-        // POST: Plots/Create
+        // POST: Parametres/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PlotID,Chemin,Nom,ModeleID")] Plot plot)
+        public async Task<IActionResult> Create([Bind("ParametresID,Nom,Valeur,ModeleID")] Parametres parametres)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(plot);
+                _context.Add(parametres);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID", plot.ModeleID);
-            return View(plot);
+            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID", parametres.ModeleID);
+            return View(parametres);
         }
 
-        // GET: Plots/Edit/5
+        // GET: Parametres/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Plot == null)
+            if (id == null || _context.Parametres == null)
             {
                 return NotFound();
             }
 
-            var plot = await _context.Plot.FindAsync(id);
-            if (plot == null)
+            var parametres = await _context.Parametres.FindAsync(id);
+            if (parametres == null)
             {
                 return NotFound();
             }
-            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID", plot.ModeleID);
-            return View(plot);
+            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID", parametres.ModeleID);
+            return View(parametres);
         }
 
-        // POST: Plots/Edit/5
+        // POST: Parametres/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PlotID,Chemin,Nom,ModeleID")] Plot plot)
+        public async Task<IActionResult> Edit(int id, [Bind("ParametresID,Nom,Valeur,ModeleID")] Parametres parametres)
         {
-            if (id != plot.PlotID)
+            if (id != parametres.ParametresID)
             {
                 return NotFound();
             }
@@ -102,12 +102,12 @@ namespace TestS8.Controllers
             {
                 try
                 {
-                    _context.Update(plot);
+                    _context.Update(parametres);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PlotExists(plot.PlotID))
+                    if (!ParametresExists(parametres.ParametresID))
                     {
                         return NotFound();
                     }
@@ -118,51 +118,51 @@ namespace TestS8.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID", plot.ModeleID);
-            return View(plot);
+            ViewData["ModeleID"] = new SelectList(_context.Modele, "ModeleID", "ModeleID", parametres.ModeleID);
+            return View(parametres);
         }
 
-        // GET: Plots/Delete/5
+        // GET: Parametres/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Plot == null)
+            if (id == null || _context.Parametres == null)
             {
                 return NotFound();
             }
 
-            var plot = await _context.Plot
-                .Include(p => p.Modele)
-                .FirstOrDefaultAsync(m => m.PlotID == id);
-            if (plot == null)
+            var parametres = await _context.Parametres
+                .Include(p => p.Modeles)
+                .FirstOrDefaultAsync(m => m.ParametresID == id);
+            if (parametres == null)
             {
                 return NotFound();
             }
 
-            return View(plot);
+            return View(parametres);
         }
 
-        // POST: Plots/Delete/5
+        // POST: Parametres/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Plot == null)
+            if (_context.Parametres == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Plot'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Parametres'  is null.");
             }
-            var plot = await _context.Plot.FindAsync(id);
-            if (plot != null)
+            var parametres = await _context.Parametres.FindAsync(id);
+            if (parametres != null)
             {
-                _context.Plot.Remove(plot);
+                _context.Parametres.Remove(parametres);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PlotExists(int id)
+        private bool ParametresExists(int id)
         {
-          return (_context.Plot?.Any(e => e.PlotID == id)).GetValueOrDefault();
+          return (_context.Parametres?.Any(e => e.ParametresID == id)).GetValueOrDefault();
         }
     }
 }

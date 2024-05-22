@@ -11,8 +11,10 @@ namespace TestS8.Data
         {
         }
         public DbSet<TestS8.Models.Utilisateur>? Utilisateur { get; set; }
-        public DbSet<TestS8.Models.Simulation>? Simulation { get; set; }
+        public DbSet<TestS8.Models.Connexion>? Connexion { get; set; }
         public DbSet<TestS8.Models.Modele>? Modele { get; set; }
-        public DbSet<TestS8.Models.Plot>? Plot { get; set; }
+        public DbSet<TestS8.Models.Parametres>? Parametres { get; set; }
+        public DbSet<TestS8.Models.Simulation>? Simulation { get; set; }
+      
     }
 }

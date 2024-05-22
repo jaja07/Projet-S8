@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using TestS8.Models;
 
 namespace TestS8.Controllers
 {
+    [Authorize(Roles = "admin, expert")]
     public class SimulationsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,7 +24,7 @@ namespace TestS8.Controllers
         // GET: Simulations
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Simulation.Include(s => s.Utilisateur);
+            var applicationDbContext = _context.Simulation.Include(s => s.Connexion);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,7 +37,7 @@ namespace TestS8.Controllers
             }
 
             var simulation = await _context.Simulation
-                .Include(s => s.Utilisateur)
+                .Include(s => s.Connexion)
                 .FirstOrDefaultAsync(m => m.SimulationID == id);
             if (simulation == null)
             {
@@ -48,7 +50,7 @@ namespace TestS8.Controllers
         // GET: Simulations/Create
         public IActionResult Create()
         {
-            ViewData["UtilisateurID"] = new SelectList(_context.Utilisateur, "UtilisateurID", "UtilisateurID");
+            ViewData["ConnexionID"] = new SelectList(_context.Connexion, "ConnexionID", "ConnexionID");
             return View();
         }
 
@@ -57,7 +59,7 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SimulationID,Date,UtilisateurID")] Simulation simulation)
+        public async Task<IActionResult> Create([Bind("SimulationID,Date,ConnexionID")] Simulation simulation)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +67,7 @@ namespace TestS8.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilisateurID"] = new SelectList(_context.Utilisateur, "UtilisateurID", "UtilisateurID", simulation.UtilisateurID);
+            ViewData["ConnexionID"] = new SelectList(_context.Connexion, "ConnexionID", "ConnexionID", simulation.ConnexionID);
             return View(simulation);
         }
 
@@ -82,7 +84,7 @@ namespace TestS8.Controllers
             {
                 return NotFound();
             }
-            ViewData["UtilisateurID"] = new SelectList(_context.Utilisateur, "UtilisateurID", "UtilisateurID", simulation.UtilisateurID);
+            ViewData["ConnexionID"] = new SelectList(_context.Connexion, "ConnexionID", "ConnexionID", simulation.ConnexionID);
             return View(simulation);
         }
 
@@ -91,7 +93,7 @@ namespace TestS8.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SimulationID,Date,UtilisateurID")] Simulation simulation)
+        public async Task<IActionResult> Edit(int id, [Bind("SimulationID,Date,ConnexionID")] Simulation simulation)
         {
             if (id != simulation.SimulationID)
             {
@@ -118,7 +120,7 @@ namespace TestS8.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UtilisateurID"] = new SelectList(_context.Utilisateur, "UtilisateurID", "UtilisateurID", simulation.UtilisateurID);
+            ViewData["ConnexionID"] = new SelectList(_context.Connexion, "ConnexionID", "ConnexionID", simulation.ConnexionID);
             return View(simulation);
         }
 
@@ -131,7 +133,7 @@ namespace TestS8.Controllers
             }
 
             var simulation = await _context.Simulation
-                .Include(s => s.Utilisateur)
+                .Include(s => s.Connexion)
                 .FirstOrDefaultAsync(m => m.SimulationID == id);
             if (simulation == null)
             {
