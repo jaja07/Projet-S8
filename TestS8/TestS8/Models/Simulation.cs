@@ -7,7 +7,7 @@ namespace TestS8.Models
         [Key]
         public int SimulationID { get; set; }
         public DateTime Date { get; set; }
-        public string ConnexionID { get; set; }
+        public int ConnexionID { get; set; }
 
         //Propriétés de navigation
         public Connexion Connexion { get; set; } 

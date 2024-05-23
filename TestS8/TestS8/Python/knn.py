@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
 import datetime
@@ -84,51 +86,40 @@ def filter_columns(df, column_names):
             filtered_df[column] = df[column]
     return filtered_df
 
+def keys_exist(d, keys):
+    return all(key in d for key in keys)
+
 def knn_model (n_neighbors_knn,weights_knn,algorithm,p_knn):
-    df_timing_slices = dataframe['df_timing_slices']
-    timing_slices = dataframe['timing_slices']
-    reflist = dataframe['reflist']
-    timing = dataframe['timing'] 
+    # Liste des clés à vérifier
+    required_keys = ['df_timing_slices', 'timing_slices', 'reflist', 'timing']
+    if dataframe is not None and keys_exist(dataframe, required_keys):
+        df_timing_slices = dataframe['df_timing_slices']
+        timing_slices = dataframe['timing_slices']
+        reflist = dataframe['reflist']
+        timing = dataframe['timing'] 
+    else:
+        df_timing_slices = pd.read_excel("df_timing_slices.xlsx")
+        timing_slices = pd.read_excel("timing_slices.xlsx")
+        reflist = pd.read_excel("reflist.xlsx")
+        timing = pd.read_excel("timing.xlsx")
+        
     timing['window_width'] = (timing['Stopdown'] - timing['Startup']).apply(lambda x:x.total_seconds())
     timing['window_run_id'] = timing['refListId'].astype(str) +"_"+ timing['run'].astype(str)
     a =  dataset (df_timing_slices, reflist, timing, 1)
     b=Xcols_func('all', a.columns)  
     X=filter_columns(a, b)
-    
-    
-
-    # Créer un classificateur Random Forest
-
-    #n_estimators_rm = 100   #n_estimators nombre d'abre de decision
-    #max_depth_rm = 10 #max_depth La profondeur de chaque arbre de decision
-    #min_samples_split_rm = 2#min_samples_plit Le nombre minimum d'échantillons requis pour diviser un noeud interne
-    #min_samples_leaf_rm = 1 #min_samples_leaf Le nombre minimum d'échantillons requis pour etre un noeud
-    #bootstrap_rm = True#bootstrap Indique si les échantillons sont tirés avec remplacement lors de la construction des arbres
-
-    #un nœud fait référence à un point de division dans un arbre de décision. Lorsque vous construisez un arbre de décision 
-
-    
-
     # Créer un classificateur k-NN
     clf = KNeighborsClassifier(n_neighbors=n_neighbors_knn,weights=weights_knn,algorithm=algorithm,p=p_knn)
-
-
     pred_ml = pd.DataFrame()
-
     y = a['actual']
-
     Xtrain, Xtest, ytrain, ytest = train_test_split(X, y, train_size=0.8, stratify=y)
-
     scaler = MinMaxScaler()
     scaler.fit(Xtrain)
     Xtrain_std = scaler.transform(Xtrain)
     Xtest_std = scaler.transform(Xtest)
-
     clf.fit(Xtrain_std, ytrain)
-
     ypred = clf.predict(Xtest_std)
     scores = cross_val_score(clf, Xtrain_std, ytrain, cv=5)
-
     accuracy = ( ytest == ypred ).mean()
     cm = confusion_matrix(ypred, ytest)    
 
@@ -148,40 +139,13 @@ def knn_model (n_neighbors_knn,weights_knn,algorithm,p_knn):
     print("\nMoyenne des précisions de la validation croisée:", scores.mean())
     print("\nMatrice de confusion : \n")
     print(cm)
-    plt.figure(figsize=(10,7))
+    '''
+    #plt.figure(figsize=(10,7))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Classe 0', 'Classe 1'], yticklabels=['Classe 0', 'Classe 1'])
     plt.xlabel('Prédictions')
     plt.ylabel('Vraies valeurs')
     plt.title('Matrice de confusion')
-    plt.show()
-    '''
-
-    # Créer la grille des hyperparamètres à tester
-    #param_grid = {
-        #'n_neighbors': [10, 50, 100, 200],
-       # 'weights': ['uniform', 'distance'],  # Les deux options typiques pour les poids
-       # 'algorithm': ['auto', 'ball_tree', 'kd_tree', 'brute'],  # Les algorithmes typiques pour kNN
-       # 'p': [1, 2, 4],  # Différentes valeurs pour le paramètre de distance
-    #}
-
-
-    # Créer l'instance de GridSearchCV
-    #grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=5, scoring='accuracy')
-
-    # Exécuter la recherche par grille
-    #grid_search.fit(Xtrain_std, ytrain)
-
-    # Afficher les meilleurs hyperparamètres
-    #print("Meilleurs hyperparamètres:", grid_search.best_params_)
-
-    # Afficher la meilleure métrique obtenue
-    #print("Meilleure métrique (accuracy):", grid_search.best_score_)
-
-    # Utiliser le meilleur modèle
-    #best_model = grid_search.best_estimator_
-    #score = best_model.score(Xtest_std, ytest)
-    #print("Test accuracy:", score)
-
+    plt.savefig("../wwwroot/images/knn_cm.png")
     return accuracy
 
     

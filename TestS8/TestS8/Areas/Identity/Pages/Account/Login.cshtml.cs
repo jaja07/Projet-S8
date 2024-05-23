@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using TestS8.Models;
 using TestS8.Data;
+using System.Security.Claims;
 
 namespace TestS8.Areas.Identity.Pages.Account
 {
@@ -117,20 +118,30 @@ namespace TestS8.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     // Récupérer l'utilisateur connecté
                     var user = await _userManager.FindByEmailAsync(Input.Email);
-
+                    if (!(_context.Utilisateur.Any()))
+                    {
+                        _context.Utilisateur.Add(
+                            new Utilisateur
+                            {
+                                UtilisateurID = user.Id,
+                                Mail = user.Email
+                            }
+                        );
+                    }
                     if (user != null)
                     {
                         // Enregistrer les informations de connexion
                         var connexion = new Connexion
                         {
-                            ConnexionID = user.Id,
                             Email = user.Email,
-                            DateConnexion = DateTime.Now
+                            DateConnexion = DateTime.Now,
+                            UtilisateurID = user.Id
                         };
 
                         _context.Connexion.Add(connexion);

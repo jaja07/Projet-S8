@@ -18,11 +18,13 @@ namespace TestS8.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _context = context;
+            _userManager = userManager;
         }
         public IActionResult Index()
         {
@@ -68,50 +70,17 @@ namespace TestS8.Controllers
 
         public async Task<IActionResult> Valider(Methods model)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
         {
-            float ExtractNumber(string result)
-            {
-                if (!string.IsNullOrEmpty(result))
-                {
-
-                    dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
-                    if (jsonResult != null && jsonResult.accuracy != null)
-                    {
-                        //  accuracy
-                        return (float)jsonResult.accuracy;
-                    }
-                }
-                return 0;
-            }
-            float ExtractTime(string result)
-            {
-                if (!string.IsNullOrEmpty(result))
-                {
-
-                    dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
-                    if (jsonResult != null && jsonResult.time != null)
-                    {
-                        //  accuracy
-                        return (float)jsonResult.time;
-                    }
-                }
-                return 0;
-            }
-            if (!(_context.Utilisateur.Any()))
-            {
-                _context.Utilisateur.Add(
-                    new Utilisateur
-                    {
-                        UtilisateurID = User.FindFirstValue(ClaimTypes.NameIdentifier)
-                    }
-                );
-            }
+            var user = await _userManager.GetUserAsync(User);
+            var connexion = await _context.Connexion
+                              .OrderByDescending(c => c.ConnexionID)
+                              .FirstOrDefaultAsync();
 
             // Gestion de l'historique
             // Table simulation
             Simulation simulation = new Simulation
             {
                 Date = DateTime.Now, // Date courante
-                ConnexionID = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ConnexionID = connexion.ConnexionID
             };
             _context.Simulation.Add(simulation);
             await _context.SaveChangesAsync();
@@ -123,8 +92,6 @@ namespace TestS8.Controllers
             {
                 if (model.Analytique)
                 {
-                    // Récupérer le lien du fichier uploadé et l'envoyer dans la requpete http au serveur python
-                    // Préparation de la requête http à envoyer au service python (flask_api_test.py)
                     using (var client = new HttpClient())
                     {
                         var response = await client.PostAsync("http://localhost:5000/analytical", null);
@@ -144,13 +111,6 @@ namespace TestS8.Controllers
                     _context.Modele.Add(modele);
                     await _context.SaveChangesAsync();
                     int modeleId = modele.ModeleID;
-                    /* Plot
-                    var plot = new Plot
-                    {
-                        Chemin = "",
-                        ModeleID = modeleId
-                    };
-                    _context.Add(plot);*/
                 }
                 if (model.KNN)
                 {
@@ -184,13 +144,6 @@ namespace TestS8.Controllers
                         _context.Modele.Add(modele);
                         await _context.SaveChangesAsync();
                         int modeleId = modele.ModeleID;
-                        /* Plot
-                        var plot = new Plot
-                        {
-                            Chemin = "",
-                            ModeleID = modeleId
-                        };
-                        _context.Add(plot);*/
                     }
 
                 }
@@ -229,13 +182,6 @@ namespace TestS8.Controllers
                         _context.Modele.Add(modele);
                         await _context.SaveChangesAsync();
                         int modeleId = modele.ModeleID;
-                        /* Plot
-                        var plot = new Plot
-                        {
-                            Chemin = "",
-                            ModeleID = modeleId
-                        };
-                        _context.Add(plot);*/
                     }
                 }
                 if (model.SVM)
@@ -271,13 +217,6 @@ namespace TestS8.Controllers
                         _context.Modele.Add(modele);
                         await _context.SaveChangesAsync();
                         int modeleId = modele.ModeleID;
-                        /* Plot
-                        var plot = new Plot
-                        {
-                            Chemin = "",
-                            ModeleID = modeleId
-                        };
-                        _context.Add(plot);*/
                     }
                 }
             }
@@ -300,86 +239,78 @@ namespace TestS8.Controllers
             {
                 Console.WriteLine("Accès refusé: " + unAuthExp.Message);
             }
-            // Rediriger vers une autre vue ou retourner un résultat
-            //return RedirectToAction("SuccessPage");
-            return View("Index");
+            return View("Result");
         }
 
         public async Task<IActionResult> ValiderGuest(Methods model)  // Ceci est une méthode d'action; chaque méthode d'action correspond à un URL du site
         {
-            if (ModelState.IsValid)
-            {
-                if (model.Analytique)
-                {
-                    // Récupérer le lien du fichier uploadé et l'envoyer dans la requpete http au serveur python
-                    // Préparation de la requête http à envoyer au service python (flask_api_test.py)
-                    using (var client = new HttpClient())
-                    {
-                        var response = await client.PostAsync("http://localhost:5000/analyticalguest", null);
-                        var result = await response.Content.ReadAsStringAsync();
-                        ViewBag.Analytique = result;
-                    }
-                }
-                if (model.KNN)
-                {
-                    // Préparation de la requête http à envoyer au service python (flask_api_test.py)
-                    using (var client = new HttpClient())
-                    {
-                        var requestData = new
-                        {
-                            Parameter1 = model.n_neighbors,
-                            Parameter2 = model.weights,
-                            Parameter3 = model.algorithm,
-                            Parameter4 = model.p_knn
-                        };
-                        var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
-                        var response = await client.PostAsync("http://localhost:5000/knnguest", content);
-                        var result = await response.Content.ReadAsStringAsync();
-                        ViewBag.KNN = result;
-                    }
-                    if (model.RandomForest)
-                    {
-                        // Préparation de la requête http à envoyer au service python (flask_api_test.py)
-                        using (var client = new HttpClient())
-                        {
-                            var requestData = new
-                            {
-                                Parameter1 = model.n_estimators,
-                                Parameter2 = model.max_depth,
-                                Parameter3 = model.min_samples_split,
-                                Parameter4 = model.min_samples_leaf,
-                                Parameter5 = model.bootstrap
-                            };
-                            var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
-                            var response = await client.PostAsync("http://localhost:5000/randomforestguest", content);
-                            var result = await response.Content.ReadAsStringAsync();
-                            ViewBag.Randomforest = result;
-                        }
-                    }
-                    if (model.SVM)
-                    {
-                        // Préparation de la requête http à envoyer au service python (flask_api_test.py)
-                        using (var client = new HttpClient())
-                        {
-                            var requestData = new
-                            {
-                                Parameter1 = model.kernel,
-                                Parameter2 = model.C,
-                                Parameter3 = model.probability,
-                                Parameter4 = model.tol
-                            };
-                            var content = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
-                            var response = await client.PostAsync("http://localhost:5000/svmguest", content);
-                            var result = await response.Content.ReadAsStringAsync();
-                            ViewBag.SVM = result;
-                        }
-                    }
-                }
-            }
+            
             return View("Guest");
         }
 
+        public async Task<IActionResult> Relancer(int? id)
+        {
+            if (id == null || _context.Parametres == null)
+            {
+                return NotFound();
+            }
+            var modele = await _context.Modele.FindAsync(id);
+            var parametres = await _context.Parametres
+                .Include(m => m.Modeles)
+                .Where(m => m.Modeles.ModeleID == id) // Filter by SimulationID
+                .ToListAsync();
 
+            if (parametres.Count == 0)
+            {
+                return NotFound();
+            }
+
+            if(modele.Nom == "Analytique")
+            {
+
+            }
+            if (modele.Nom == "Random Forest")
+            {
+
+            }
+            if (modele.Nom == "KNN")
+            {
+
+            }
+            if (modele.Nom == "SVM")
+            {
+
+            }
+            return View("Result");
+        }
+        float ExtractNumber(string result)
+        {
+            if (!string.IsNullOrEmpty(result))
+            {
+
+                dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
+                if (jsonResult != null && jsonResult.accuracy != null)
+                {
+                    //  accuracy
+                    return (float)jsonResult.accuracy;
+                }
+            }
+            return 0;
+        }
+        float ExtractTime(string result)
+        {
+            if (!string.IsNullOrEmpty(result))
+            {
+
+                dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
+                if (jsonResult != null && jsonResult.time != null)
+                {
+                    //  accuracy
+                    return (float)jsonResult.time;
+                }
+            }
+            return 0;
+        }
 
         [Authorize(Roles = "Admin")]
         public IActionResult IndexAdmin()

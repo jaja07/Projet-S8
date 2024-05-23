@@ -226,8 +226,11 @@ namespace TestS8.Data.Migrations
 
             modelBuilder.Entity("TestS8.Models.Connexion", b =>
                 {
-                    b.Property<string>("ConnexionID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ConnexionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConnexionID"), 1L, 1);
 
                     b.Property<DateTime>("DateConnexion")
                         .HasColumnType("datetime2");
@@ -313,9 +316,8 @@ namespace TestS8.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SimulationID"), 1L, 1);
 
-                    b.Property<string>("ConnexionID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ConnexionID")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");

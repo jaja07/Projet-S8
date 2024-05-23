@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="data_anonymous\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

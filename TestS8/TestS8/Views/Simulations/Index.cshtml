@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Connexion.ConnexionID)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.SimulationID">Edit</a> |
+                <a asp-controller="Modeles" asp-action="IndexSimul" asp-route-id="@item.SimulationID">Afficher</a> |
                 <a asp-action="Details" asp-route-id="@item.SimulationID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.SimulationID">Delete</a>
             </td>

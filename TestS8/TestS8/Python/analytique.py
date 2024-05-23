@@ -9,9 +9,15 @@ from config import dataframe
 
 
 def analytical():
-    df_timing_slices = dataframe['df_timing_slices']
-    timing_slices = dataframe['timing_slices']
-    reflist = dataframe['reflist']
+    if dataframe:
+        df_timing_slices = dataframe['df_timing_slices']
+        timing_slices = dataframe['timing_slices']
+        reflist = dataframe['reflist']
+        
+    else:
+        df_timing_slices = pd.read_excel("df_timing_slices.xlsx")
+        timing_slices = pd.read_excel("timing_slices.xlsx")
+        reflist = pd.read_excel("reflist.xlsx")
     ana = df_timing_slices.groupby(['Epc', 'window_run_id', 'slice_id', 'loc']) ['Rssi'].max().unstack('loc', fill_value =- 110).reset_index(drop=False)
 
     order=pd.DataFrame(timing_slices['slice_id'].unique(), columns=['slice_id'])

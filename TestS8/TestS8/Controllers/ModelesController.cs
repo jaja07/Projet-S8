@@ -26,6 +26,27 @@ namespace TestS8.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        public async Task<IActionResult> IndexSimul(int? id)
+        {
+            if (id == null || _context.Modele == null)
+            {
+                return NotFound();
+            }
+
+            // Eager loading with Include and Where clause
+            var modeles = await _context.Modele
+                .Include(m => m.Simulation)
+                .Where(m => m.Simulation.SimulationID == id) // Filter by SimulationID
+                .ToListAsync();
+
+            if (modeles.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return View(modeles);
+        }
+
         // GET: Modeles/Details/5
         public async Task<IActionResult> Details(int? id)
         {

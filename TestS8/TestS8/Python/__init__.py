@@ -3,13 +3,7 @@ import test1
 from pretraitement import pretraitement
 from analytique import analytical
 from randomforest import random_forest
-from analytiqueg import analyticalg
-from randomforestg import random_forestg
-from knng import knn_modelg
-from svmg import svm_modelg
+from knn import knn_model
 
 #pretraitement()
-#print(analytical())
-#print(analyticalg())
-print(knn_modelg())
-#print(random_forest(100,10,2,1,True))
+knn_model(5,'uniform','auto',2)

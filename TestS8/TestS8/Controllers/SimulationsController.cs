@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,6 @@ using TestS8.Models;
 
 namespace TestS8.Controllers
 {
-    [Authorize(Roles = "admin, expert")]
     public class SimulationsController : Controller
     {
         private readonly ApplicationDbContext _context;

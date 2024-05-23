@@ -1,0 +1,276 @@
+﻿@{
+    ViewData["Title"] = "Accueil";
+}
+@model TestS8.Models.Methods
+@{
+    float ExtractNumber(string result)
+    {
+        if (!string.IsNullOrEmpty(result))
+        {
+
+            dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
+            if (jsonResult != null && jsonResult.accuracy != null)
+            {
+                //  accuracy
+                return (float)jsonResult.accuracy;
+            }
+        }
+        return 0;
+    }
+    string ExtractPath(string result)
+    {
+        if (!string.IsNullOrEmpty(result))
+        {
+            dynamic jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(result);
+            if (jsonResult != null && jsonResult.path != null)
+            {
+                //  accuracy
+                return (string)jsonResult.path;
+            }
+        }
+        return null;
+    }
+    string analytique = ExtractNumber(ViewBag.Analytique).ToString().Replace(",", ".");
+    string knn = ExtractNumber(ViewBag.KNN).ToString().Replace(",", ".");
+    string svm = ExtractNumber(ViewBag.SVM).ToString().Replace(",", ".");
+    string randomforest = ExtractNumber(ViewBag.Randomforest).ToString().Replace(",", "."); 
+
+    string knn_cm = ExtractPath(ViewBag.KNN);
+    string svm_cm = ExtractPath(ViewBag.SVM);
+    string rf_cm = ExtractPath(ViewBag.Randomforest);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://cdn.pixabay.com/photo/2024/01/29/22/47/ai-generated-8540915_1280.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 20px; /* Espacement autour du contenu */
+            color: #FFFFFF; /* Couleur du texte blanc */
+        }
+
+        .welcome-title {
+            font-size: 2.5em; /* Taille du titre */
+            text-align: center; /* Centrage horizontal */
+            margin-bottom: 30px; /* Espacement en dessous */
+            text-transform: uppercase; /* Conversion en majuscules */
+            letter-spacing: 2px; /* Espacement entre les lettres */
+        }
+
+        .Menu {
+            list-style-type: none; /* Supprime les puces de la liste */
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-around; /* Centrage horizontal des éléments */
+        }
+
+            .Menu li {
+                position: relative; /* Position relative pour positionner le sous-menu */
+                width: calc(25% - 20px); /* Largeur des cartes */
+                background-color: rgba(255, 255, 255, 0.1); /* Fond transparent */
+                border-radius: 20px; /* Coins arrondis */
+                padding: 20px; /* Espacement à l'intérieur des cartes */
+                margin: 0 10px; /* Espacement entre les cartes */
+                text-align: center;
+                transition: background-color 0.3s ease; /* Transition fluide */
+            }
+
+                .Menu li:hover {
+                    background-color: rgba(255, 255, 255, 0.3); /* Fond transparent légèrement plus clair au survol */
+                }
+
+                .Menu li label {
+                    cursor: pointer; /* Curseur pointer */
+                }
+
+        /* Styles pour le formulaire */
+        .form-container {
+            display: none; /* Par défaut, le formulaire est caché */
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+            .form-container input[type="number"] {
+                width: 100px; /* Largeur des champs de nombre */
+            }
+
+            .form-container select {
+                width: 100px; /* Largeur des listes déroulantes */
+            }
+
+        .conteneur-bouton {
+            text-align: center; /* Centrage horizontal du bouton */
+        }
+
+        .bouton-envoyer {
+            background-color: #4CAF50; /* Couleur de fond verte */
+            color: white; /* Couleur du texte blanc */
+            padding: 10px 20px; /* Espacement autour du texte */
+            border: none; /* Pas de bordure */
+            border-radius: 5px; /* Coins arrondis */
+            cursor: pointer; /* Curseur pointer */
+            transition: background-color 0.3s ease; /* Transition fluide */
+        }
+
+            .bouton-envoyer:hover {
+                background-color: #45a049; /* Couleur de fond plus foncée au survol */
+            }
+
+        .import-section {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart{
+            background: white;
+            height:100px;
+            width:100px;
+        }
+        .matrice{
+
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="result">
+        <h1 class="welcome-title">Résultat de simulation</h1>
+
+        <div class="col-md-8">
+            <div class="result">
+                <h4>Result:</h4>
+                @if (ViewBag.Analytique != null)
+                {
+                    <pre>@Html.Raw(ViewBag.Analytique)</pre>
+                }
+                @if (ViewBag.Randomforest != null)
+                {
+                    <pre>@Html.Raw(ViewBag.Randomforest)</pre>
+                }
+                @if (ViewBag.KNN != null)
+                {
+                    <pre>@Html.Raw(ViewBag.KNN)</pre>
+                }
+                @if (ViewBag.SVM != null)
+                {
+                    <pre>@Html.Raw(ViewBag.SVM)</pre>
+                }
+            </div>
+        </div>
+
+        <div>
+            <canvas id="myChart" class="chart"></canvas>
+        </div>
+
+        <div class="col-md-8">
+            <div id="cm">
+                <h4>Matrices de confusion:</h4>
+                <div class="matrice">
+                    <img src="/images/knn_cm.png" />
+                </div>
+                <div class="matrice">
+                    <img src="/images/rf_cm.png" />
+                </div>
+                <div class="matrice">
+                    <img src="/images/svm_cm.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="conteneur-bouton">
+        <button onclick="generatepdf()" id="pdf" class="bouton-envoyer">Download PDF</button>
+    </div>
+
+    
+
+    <script>
+        function updateChart(selectedOptions) {
+            const ctx = document.getElementById('myChart');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Analytique','Random Forest', 'SVM', 'KNN'],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: selectedOptions,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        updateChart([@analytique, @randomforest, @svm, @knn]);
+    </script>
+
+    <script>
+        function generatepdf() {
+            const element = document.getElementById("result");
+            var opt = {
+                margin: 1,
+                filename: 'myfile.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+    <script>
+        function showForm(methodName) {
+            var formContainer = document.getElementById('form-container-' + methodName);
+            if (formContainer.style.display === 'block') {
+                formContainer.style.display = 'none';
+            } else {
+                formContainer.style.display = 'block';
+            }
+
+            // Assure que le formulaire est affiché en bas de la carte
+            window.scrollTo({
+                top: formContainer.offsetTop,
+                behavior: 'smooth'
+            });
+
+        }
+        function showForm(methodName) {
+            var formContainer = document.getElementById('form-container-' + methodName);
+            var importSection = document.getElementById('import-section-' + methodName);
+
+            if (formContainer.style.display === 'block') {
+                formContainer.style.display = 'none';
+                importSection.style.display = 'none';
+            } else {
+                formContainer.style.display = 'block';
+                importSection.style.display = 'block';
+            }
+
+            // Assure que le formulaire est affiché en bas de la carte
+            window.scrollTo({
+                top: formContainer.offsetTop,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>

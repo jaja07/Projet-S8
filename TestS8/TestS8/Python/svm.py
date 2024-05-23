@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import os
 import datetime
@@ -84,11 +86,22 @@ def filter_columns(df, column_names):
             filtered_df[column] = df[column]
     return filtered_df
 
+def keys_exist(d, keys):
+    return all(key in d for key in keys)
+
 def svm_model (kernel_svm,C_svm,probability_svm,tol_svm):
-    df_timing_slices = dataframe['df_timing_slices']
-    timing_slices = dataframe['timing_slices']
-    reflist = dataframe['reflist']
-    timing = dataframe['timing'] 
+
+    required_keys = ['df_timing_slices', 'timing_slices', 'reflist', 'timing']
+    if dataframe is not None and keys_exist(dataframe, required_keys):
+        df_timing_slices = dataframe['df_timing_slices']
+        timing_slices = dataframe['timing_slices']
+        reflist = dataframe['reflist']
+        timing = dataframe['timing'] 
+    else:
+        df_timing_slices = pd.read_excel("df_timing_slices.xlsx")
+        timing_slices = pd.read_excel("timing_slices.xlsx")
+        reflist = pd.read_excel("reflist.xlsx")
+        timing = pd.read_excel("timing.xlsx")
     timing['window_width'] = (timing['Stopdown'] - timing['Startup']).apply(lambda x:x.total_seconds())
     timing['window_run_id'] = timing['refListId'].astype(str) +"_"+ timing['run'].astype(str)
     a =  dataset (df_timing_slices, reflist, timing, 1)
@@ -125,40 +138,13 @@ def svm_model (kernel_svm,C_svm,probability_svm,tol_svm):
     print("\nMoyenne des précisions de la validation croisée:", scores.mean())
     print("\nMatrice de confusion : \n")
     print(cm)
-    plt.figure(figsize=(10,7))
+    '''
+    #plt.figure(figsize=(10,7))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Classe 0', 'Classe 1'], yticklabels=['Classe 0', 'Classe 1'])
     plt.xlabel('Prédictions')
     plt.ylabel('Vraies valeurs')
     plt.title('Matrice de confusion')
-    plt.show()
-    #print(pred_ml)
-    '''
-
-    # Créer la grille des hyperparamètres à tester
-    #param_grid = {
-        #'kernel': ['linear', 'rbf', 'poly', 'sigmoid'],
-        #'C': [0.1, 1, 10, 100],
-        #'probability': [True, False],
-        #'tol': [0.001, 0.01, 0.1],
-
-    #}
-
-    # Créer l'instance de GridSearchCV
-    #grid_search = GridSearchCV(estimator=clf, param_grid=param_grid, cv=5, scoring='accuracy')
-
-    # Exécuter la recherche par grille
-    #grid_search.fit(Xtrain, ytrain)
-
-    # Afficher les meilleurs hyperparamètres
-    #print("Meilleurs hyperparamètres:", grid_search.best_params_)
-
-    # Afficher la meilleure métrique obtenue
-    #print("Meilleure métrique (accuracy):", grid_search.best_score_)
-
-    # Utiliser le meilleur modèle
-    #best_model = grid_search.best_estimator_
-    #score = best_model.score(Xtest, ytest)
-    #print("Test accuracy:", score)
+    plt.savefig("../wwwroot/images/svm_cm.png")
     return accuracy
 
 #svm_model=svm_model('linear',1.0,False,1e-3)
