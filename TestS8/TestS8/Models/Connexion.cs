@@ -14,4 +14,5 @@ namespace TestS8.Models
         public Utilisateur Utilisateur { get; set; }
         public ICollection<Simulation> Simulations { get; set; }
     }
+
 }

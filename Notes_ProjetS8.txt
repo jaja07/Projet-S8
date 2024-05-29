@@ -1,0 +1,10 @@
+**************************************************ASP.Net*****************************************************
+Contexte de données
+Annotation de donées
+Migrations: Add-Migration NomDeLaMigration  // Remove-Migration
+	    Update-Database
+ASP Identity
+Programmation asynchrone
+Chart JS
+HTML2PDF JS
+Flask

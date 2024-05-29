@@ -18,7 +18,7 @@ def pretraitement():
         raise FileNotFoundError(f"Fichier ZIP introuvable: {fichier_zip}")
 
     with zipfile.ZipFile(fichier_zip, 'r') as zip_ref:
-        zip_ref.extractall()
+        zip_ref.extractall(path="data_anonymous")   
 
     pathfile = 'data_anonymous'
     # dataframe reflist

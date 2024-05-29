@@ -4,11 +4,9 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h2> Détails de la simulation</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -27,10 +25,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Duree_simul)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Simulation)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -53,10 +47,7 @@
                     @Html.DisplayFor(modelItem => item.Duree_simul)
                 </td>
                 <td>
-                    <a class="nav-link text-dark" asp-area="" asp-route-id="@item.ModeleID" asp-controller="Home" asp-action="Relancer">Relancer</a>
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.ModeleID" >Details</a> |
+                    <a asp-route-id="@item.ModeleID" asp-controller="Home" asp-action="Relancer">Relancer</a> |
                     <a asp-action="Delete" asp-route-id="@item.ModeleID">Delete</a>
                 </td>
             </tr>

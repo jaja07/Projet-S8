@@ -7,6 +7,10 @@
         public bool RandomForest { get; set; }
         public bool SVM { get; set; }
 
+        // Analytique
+        public int t0_run_mof { get; set; }
+        public int steps_mof { get; set; }
+
         // Random Forest
         public double n_estimators { get; set; }
         public double max_depth { get; set; }

@@ -13,14 +13,6 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\wwwroot\\images\\knn_cm.png",
-      "PackagePath": "staticwebassets\\images\\knn_cm.png"
-    },
-    {
-      "Id": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\wwwroot\\images\\svm_cm.png",
-      "PackagePath": "staticwebassets\\images\\svm_cm.png"
-    },
-    {
       "Id": "C:\\Users\\jarfi\\Bureau\\Projet-S8\\TestS8\\TestS8\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

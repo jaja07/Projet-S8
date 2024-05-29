@@ -26,6 +26,29 @@ namespace TestS8.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        public async Task<IActionResult> IndexAnalytique()
+        {
+            var applicationDbContext = _context.Modele.Include(m => m.Simulation).Where(m => m.Nom == "Analytique");
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> IndexKNN()
+        {
+            var applicationDbContext = _context.Modele.Include(m => m.Simulation).Where(m => m.Nom == "KNN");
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> IndexRandomForest()
+        {
+            var applicationDbContext = _context.Modele.Include(m => m.Simulation).Where(m => m.Nom == "Random Forest");
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> IndexSVM()
+        {
+            var applicationDbContext = _context.Modele.Include(m => m.Simulation).Where(m => m.Nom == "SVM");
+            return View(await applicationDbContext.ToListAsync());
+        }
         public async Task<IActionResult> IndexSimul(int? id)
         {
             if (id == null || _context.Modele == null)
@@ -46,7 +69,7 @@ namespace TestS8.Controllers
 
             return View(modeles);
         }
-
+        
         // GET: Modeles/Details/5
         public async Task<IActionResult> Details(int? id)
         {

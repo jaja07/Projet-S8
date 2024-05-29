@@ -1,0 +1,67 @@
+﻿@model TestS8.ViewModels.EditUserRoleViewModel
+@{
+    ViewBag.Title = "Edit User";
+}
+
+<h1>Modifier Roles Utilisateur</h1>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    @* background-image: url('https://cdn.pixabay.com/photo/2024/01/29/22/47/ai-generated-8540915_1280.jpg');*@ background-color: rgba(173, 216, 230, 0.7);
+        background-size: cover;
+        background-position: center;
+        padding: 20px;
+        color: #FFFFFF;
+    }
+
+    table {
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #FFFFFF;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #FFFFFF;
+    }
+
+    th {
+        background-color: rgba(255, 255, 255,0.3);
+    }
+
+    tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+</style>
+<h4>@Model.Email</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="UserId" />
+            <div>
+                @* <label asp-for="Email">@Model.Email</label>*@
+                <input type="hidden" asp-for="Email"  />
+            </div>
+            <div>
+                @foreach (var role in Model.AllRoles)
+                {
+                    <div>
+                        <input type="radio" name="selectedRoles" value="@role.Name"
+                        @(Model.Roles != null && Model.Roles.Contains(role.Name) ? "checked" : "") />
+                        <label>@role.Name</label>
+                    </div>
+                }
+            </div>
+            <button type="submit">Save</button>
+        </form> 
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

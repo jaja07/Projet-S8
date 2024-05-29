@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="data_anonymous\**" />
+    <Content Remove="data_anonymous\**" />
+    <EmbeddedResource Remove="data_anonymous\**" />
+    <None Remove="data_anonymous\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.25" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.29" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.29" />
@@ -22,8 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="data_anonymous\" />
     <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Users\Edit.cshtml" />
+    <None Include="Views\Users\Index.cshtml" />
   </ItemGroup>
 
 </Project>

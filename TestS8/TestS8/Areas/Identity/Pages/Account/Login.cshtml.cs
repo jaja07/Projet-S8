@@ -124,7 +124,8 @@ namespace TestS8.Areas.Identity.Pages.Account
                 {
                     // Récupérer l'utilisateur connecté
                     var user = await _userManager.FindByEmailAsync(Input.Email);
-                    if (!(_context.Utilisateur.Any()))
+                    var utiliateur = await _context.Utilisateur.FindAsync(user.Id);
+                    if (utiliateur == null)
                     {
                         _context.Utilisateur.Add(
                             new Utilisateur

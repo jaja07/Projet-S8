@@ -164,6 +164,12 @@ def random_forest (n_estimators_rm, max_depth_rm,  min_samples_split_rm, min_sam
 
     pred_ml.loc[:, 'pred_ml_bool'] = (pred_ml.loc[:, 'actual'] == pred_ml.loc[:, 'pred_ml'])
     pred_ml = pred_ml [['Epc', 'window_run_id', 'actual', 'pred_ml', 'pred_ml_bool']]
+    
+    pred_ml_false = pred_ml[~pred_ml['pred_ml_bool']]
+    
+
+    column_data = pred_ml_false['Epc']
+    column_string = ', '.join(column_data.astype(str))
     '''
     print("Précision du model :", accuracy)
     print("\nPrécision par partie avec la validation croisée:", scores)
@@ -177,7 +183,7 @@ def random_forest (n_estimators_rm, max_depth_rm,  min_samples_split_rm, min_sam
     plt.ylabel('Vraies valeurs')
     plt.title('Matrice de confusion')
     plt.savefig("../wwwroot/images/rf_cm.png")
-    return(accuracy)
+    return(accuracy,column_string)
     #return(accuracy,scores,scores.mean,cm)
    
     

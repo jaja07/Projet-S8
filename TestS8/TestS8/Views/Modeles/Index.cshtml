@@ -4,11 +4,25 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h2>Historique</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<label for="navigation-select">Trier:</label>
+<select id="navigation-select" onchange="navigateToAction(this)">
+    <option value="@Url.Action("Index", "Modeles")">Tous les modèles</option>
+    <option value="@Url.Action("Index", "Simulations")">Dates</option>
+    <option value="@Url.Action("IndexAnalytique", "Modeles")">Analytique</option>
+    <option value="@Url.Action("IndexKNN", "Modeles")">KNN</option>
+    <option value="@Url.Action("IndexRandomForest", "Modeles")">Random Forest</option>
+    <option value="@Url.Action("IndexSVM", "Modeles")">SVM</option>
+</select>
+<script>
+    function navigateToAction(selectElement) {
+        var url = selectElement.value;
+        if (url) {
+            window.location.href = url;
+        }
+    }
+</script>
 <table class="table">
     <thead>
         <tr>
@@ -28,7 +42,7 @@
                 @Html.DisplayNameFor(model => model.Duree_simul)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Simulation)
+                @Html.DisplayNameFor(model => model.Simulation.Date)
             </th>
             <th></th>
         </tr>
@@ -52,11 +66,10 @@
                 @Html.DisplayFor(modelItem => item.Duree_simul)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Simulation.SimulationID)
+                @Html.DisplayFor(modelItem => item.Simulation.Date)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ModeleID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ModeleID">Details</a> |
+                <a asp-route-id="@item.ModeleID" asp-controller="Home" asp-action="Relancer">Relancer</a> |
                 <a asp-action="Delete" asp-route-id="@item.ModeleID">Delete</a>
             </td>
         </tr>

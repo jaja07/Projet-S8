@@ -4,11 +4,25 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h2>Historique</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<label for="navigation-select">Trier:</label>
+<select id="navigation-select" onchange="navigateToAction(this)">
+    <option value="@Url.Action("Index", "Simulations")">Dates</option>
+    <option value="@Url.Action("Index", "Modeles")">Tous les modèles</option>
+    <option value="@Url.Action("IndexAnalytique", "Modeles")">Analytique</option>
+    <option value="@Url.Action("IndexKNN", "Modeles")">KNN</option>
+    <option value="@Url.Action("IndexRandomForest", "Modeles")">Random Forest</option>
+    <option value="@Url.Action("IndexSVM", "Modeles")">SVM</option>
+</select>
+<script>
+    function navigateToAction(selectElement) {
+        var url = selectElement.value;
+        if (url) {
+            window.location.href = url;
+        }
+    }
+</script>
 <table class="table">
     <thead>
         <tr>
@@ -16,26 +30,25 @@
                 @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Connexion)
+                @Html.DisplayNameFor(model => model.Connexion.Email)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Connexion.ConnexionID)
-            </td>
-            <td>
-                <a asp-controller="Modeles" asp-action="IndexSimul" asp-route-id="@item.SimulationID">Afficher</a> |
-                <a asp-action="Details" asp-route-id="@item.SimulationID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SimulationID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Connexion.Email)
+                </td>
+                <td>
+                    <a asp-controller="Modeles" asp-action="IndexSimul" asp-route-id="@item.SimulationID">Afficher</a> |
+                    <a asp-action="Delete" asp-route-id="@item.SimulationID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

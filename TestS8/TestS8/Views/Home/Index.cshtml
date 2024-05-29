@@ -20,7 +20,7 @@
     string analytique = ExtractNumber(ViewBag.Analytique).ToString().Replace(",", ".");
     string knn = ExtractNumber(ViewBag.KNN).ToString().Replace(",", ".");
     string svm = ExtractNumber(ViewBag.SVM).ToString().Replace(",", ".");
-    string randomforest = ExtractNumber(ViewBag.Randomforest).ToString().Replace(",", "."); ;
+    string randomforest = ExtractNumber(ViewBag.Randomforest).ToString().Replace(",", "."); 
 }
 
 <!DOCTYPE html>
@@ -137,6 +137,23 @@
             <li>
                 <input type="checkbox" asp-for="Analytique" onclick="showForm('Analytique')">
                 <label asp-for="Analytique">Méthode Analytique</label>
+                <div id="form-container-Analytique" class="form-container">
+                    <!-- Formulaire pour Analytique -->
+                    <div>
+                        <label asp-for="t0_run_mof">t0_run_mof</label>
+                        <input type="number" asp-for="t0_run_mof" value="5" data-default="5">
+                        <p>
+                            Détail : Il s'agit d'un marqueur de passage de carton qui dit quand un nouveau tour commence.
+                        </p>
+                    </div>
+                    <div>
+                        <label asp-for="steps_mof">steps_mof</label>
+                        <input type="number" asp-for="steps_mof" value="5" data-default="5">
+                        <p>
+                            Détail : Il s'agit du nombre de division.
+                        </p>
+                    </div>
+                </div>
             </li>
 
             <!--KNN-->
@@ -280,60 +297,7 @@
     </form>
                                                                  
 
-    <div class="col-md-8">
-        <div class="result">
-            <h4>Result:</h4>
-            @if (ViewBag.Analytique != null)
-            {
-                <pre>@Html.Raw(ViewBag.Analytique)</pre>
-            }
-            @if (ViewBag.Randomforest != null)
-            {
-                <pre>@Html.Raw(ViewBag.Randomforest)</pre>
-            }
-            @if (ViewBag.KNN != null)
-            {
-                <pre>@Html.Raw(ViewBag.KNN)</pre>
-            }
-            @if (ViewBag.SVM != null)
-            {
-                <pre>@Html.Raw(ViewBag.SVM)</pre>
-            }
-        </div>
-    </div>
 
-    <div>
-        <canvas id="myChart"></canvas>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-        function updateChart(selectedOptions) {
-            const ctx = document.getElementById('myChart');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Analytique', 'Random Forest', 'SVM', 'KNN'],
-                    datasets: [{
-                    label: '# of Votes',
-                    data: selectedOptions,
-                    borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-        //updateChart([0.97, @randomforest, @svm, 0.3 ]);
-
-        updateChart([@analytique, @randomforest, @svm, @knn]);
-    </script>
 
     <!-- Script JavaScript -->
     <script>

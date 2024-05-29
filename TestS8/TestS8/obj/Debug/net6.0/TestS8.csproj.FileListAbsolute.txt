@@ -2005,3 +2005,5 @@ D:\C#\Projet-S8\TestS8\TestS8\obj\Debug\net6.0\scopedcss\projectbundle\TestS8.bu
 D:\C#\Projet-S8\TestS8\TestS8\obj\Debug\net6.0\TestS8.csproj.CopyComplete
 D:\C#\Projet-S8\TestS8\TestS8\obj\Debug\net6.0\TestS8.genruntimeconfig.cache
 D:\C#\Projet-S8\TestS8\TestS8\obj\Debug\net6.0\ref\TestS8.dll
+C:\Users\jarfi\Bureau\Projet-S8\TestS8\TestS8\bin\Debug\net6.0\BouncyCastle.Crypto.dll
+C:\Users\jarfi\Bureau\Projet-S8\TestS8\TestS8\bin\Debug\net6.0\itextsharp.dll

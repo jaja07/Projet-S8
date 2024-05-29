@@ -1,0 +1,55 @@
+﻿@model IEnumerable<TestS8.ViewModels.UserRoleViewModel>
+
+<h1>Utilisateurs</h1>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: rgba(173, 216, 230, 0.7); /* Une couleur bleue claire, évocatrice d'un ciel verdant */
+        background-size: cover;
+        background-position: center;
+        padding: 20px; /* Espacement autour du contenu */
+        color: #000000; /* Couleur du texte noire pour un contraste lumineux */
+    }
+
+    table {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.8); /* Un fond blanc translucide */
+        color: #000000; /* Couleur du texte noire */
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #000000; /* Bordure noire pour une définition claire */
+    }
+
+    th {
+        background-color: rgba(0, 128, 255, 0.6); /* Un bleu clair pour les en-têtes */
+        color: #FFFFFF; /* Texte blanc pour un contraste vibrant */
+    }
+
+    tr:nth-child(even) {
+        background-color: rgba(173, 216, 230, 0.3); /* Une alternance de bleu clair translucide */
+    }
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@string.Join(", ", user.Roles)</td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@user.UserId">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
